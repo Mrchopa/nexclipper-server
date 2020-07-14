@@ -32,7 +32,6 @@ build/
 
 ### VS Code ###
 .vscode/
-.idea/
 =======
 # Compiled class file
 *.class
