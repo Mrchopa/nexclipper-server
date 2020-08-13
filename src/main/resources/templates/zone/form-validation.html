@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layout/basic_layout}">
+<head>
+<title></title>
+</head>
+<body>
+	<div layout:fragment="content" class="container-fluid">
+		<div layout:replace="~{layout/web_elements_common_fragments :: content-header('Form Validation')}"></div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+				<div class="card mb-3">
+					<div class="card-header">
+						<h3 class="card-title">BASIC FORMS</h3>
+					</div>
+					<!-- /.panel-heading -->
+					<div class="card-body">
+						<form role="form" data-toggle="validator">
+							<!--  validation체크시에는 
+								form 에  role="form" data-toggle="validator" 추가,
+								Markup 의 경우 
+								required, <div class="help-block with-errors"></div> 추가 
+								에러 메세지를 뿌려줄 경우 항목에 data-error="" 넣어줌,
+								기본 에러메세지는 "이 입력란을 작성하세요." 로 뿌려줌 
+								 -->
+							<div class="form-horizontal">
+								<div class="form-group form-group-md">
+									<label class="col-md-2 control-label" for="Name">Name</label>
+									<div class="col-md-10">
+										<input type="text" class="form-control input-md" id="Name" name="Name" data-error="정확한 이름 넣어 주세요." required>
+										<div class="help-block with-errors"></div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label" for="vCPU">vCPU</label>
+									<div class="col-md-10">
+										<select name="vCPU" id="vCPU" class="form-control input-md">
+											<option value="1">vCPU 1</option>
+											<option value="2">vCPU 2</option>
+											<option value="3">vCPU 3</option>
+											<option value="4">vCPU 4</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group form-group-md">
+									<label class="col-md-2 control-label" for="Memory">Memory</label>
+									<div class="col-md-10">
+										<select name="Memory" id="Memory" class="form-control input-md">
+											<option value="1">MEM 1G</option>
+											<option value="2">MEM 2G</option>
+											<option value="3">MEM 3G</option>
+											<option value="4">MEM 4G</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group form-group-md">
+									<label class="col-md-2 control-label" for="Disk">Disk</label>
+									<div class="col-md-10">
+										<select name="Disk" id="Disk" class="form-control input-md">
+											<option value="">Disk 30GB</option>
+											<option value="">Disk 60GB</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group form-group-md">
+									<label class="col-md-2 control-label" for="Git">Git</label>
+									<div class="col-md-10">
+										<input type="text" class="form-control input-md" id="Git" name="Git" required>
+										<p class="help-block">Git 주소를 넣어 주세요.</p>
+									</div>
+								</div>
+								<div class="form-group form-group-md">
+									<label class="col-md-2 control-label" for="docker">docker-compose.yml</label>
+									<div class="col-md-10">
+										<textarea class="form-control" name="docker" id="docker" required></textarea>
+										<div class="help-block with-errors"></div>
+									</div>
+								</div>
+								<div class="btn-area text-center">
+									<button type="submit" class="btn btn-md btn-primary" id="btnSaveQtty" name="btnSaveQtty">save</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<!-- /.panel-body -->
+				</div>
+				<!-- /.panel -->
+			</div>
+			<!--  /.col-md-12 -->
+		</div>
+		<!-- /.row -->
+	</div>
+	<!-- /.content-wrapper -->
+</body>
+</html>
