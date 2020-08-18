@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.kr.nexclipper.nexclipperserver.remote.KlevrClient;
+import co.kr.nexclipper.nexclipperserver.remote.data.AgentGroup;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
 import co.kr.nexcloud.framework.web.HttpRuntimeException;
 
@@ -18,6 +19,7 @@ public class AccountService {
 	
 	@Autowired
 	private AccountsZoneRepository zoneRepo;
+	
 	
 	@Autowired
 	private KlevrClient klevr;
@@ -35,7 +37,12 @@ public class AccountService {
 		
 		LOG.debug("persist zone : [{}]", zone);
 		
-		klevr.addGroup(zone);
+		AgentGroup group = new AgentGroup(zone);
+		
+		klevr.addGroup(group);
+		
+		// TODO: API KEY 등록 구
+//		klevr.addApiKey(zone.getId(), )
 		
 		return zone;
 	}

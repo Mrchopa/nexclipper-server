@@ -20,8 +20,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import co.kr.nexclipper.nexclipperserver.account.AccountService;
 import co.kr.nexclipper.nexclipperserver.klevr.KlevrProperties;
 import co.kr.nexcloud.framework.web.RequestParameterLoggingInterceptor;
+import co.kr.nexcloud.users.UserJoinHandler;
 import co.kr.nexcloud.users.UsersApplication;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -55,6 +57,13 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		LOG.info("addArgumentResolvers - nothing");
+	}
+	
+	@Bean
+	public UserJoinHandler userJoinHandler(AccountService service) {
+		return (user) -> {
+			LOG.debug("handler called for Join user.");
+		};
 	}
 	
 	@Bean

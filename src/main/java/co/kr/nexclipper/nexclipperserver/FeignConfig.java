@@ -20,6 +20,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import feign.RequestInterceptor;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 
@@ -35,6 +36,11 @@ public class FeignConfig implements Jackson2ObjectMapperBuilderCustomizer {
 	        .modulesToInstall(new JavaTimeModule())
 	        .locale(Locale.getDefault())
 	        .simpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+	}
+	
+	@Bean
+	public RequestInterceptor requestInterceptor() {
+		return requestTemplate -> requestTemplate.header("Content-Type", "application/json");
 	}
 	
 	@Bean
