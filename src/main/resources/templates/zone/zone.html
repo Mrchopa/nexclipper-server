@@ -1,36 +1,74 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layout/basic_layout}">
+	layout:decorate="/layout/basic_layout">
 <head>
-<!-- [[ START ]] CSS import -->
-<th:block layout:replace="~{layout/common_fragments :: css-import}"></th:block>
-<!-- [[  END  ]] CSS import -->
 </head>
 <body>
 	<div layout:fragment="content" class="container-fluid">
-		<div layout:replace="~{layout/web_elements_common_fragments :: content-header('Forms')}"></div>
+		<div layout:replace="~{layout/common_fragments :: content-header('ZONE 생성 및 Agent 설치')}"></div>
 		<div class="row">
-			<form role="form" action="/view/zones" method="POST">
-				<div class="form-group">
-					현재 생성된 ZONE 목록 : 
-					<div data-th-each="zone : ${list}">
-						[[${zone.name}]]([[${zone.platform}]])
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+				<div class="card mb-3">
+					<div class="card-header">
+						<h3 class="card-title">새로운 ZONE 생성</h3>
+					</div>
+					<div class="card-body">
+					<form role="form" action="/view/zones" method="POST">
+						<div class="form-horizontal">
+							<label class="col-sm-3 control-label">Platform 선택</label>
+							<div class="col-sm-9">
+								<div class="form-group">
+									<label class="radio-inline"> <input type="radio" name="platform" id="optionsRadiosInline1"
+										value="baremental" checked> <span></span> baremental
+									</label> <label class="radio-inline"> <input type="radio" name="platform"
+										id="optionsRadiosInline2" value="K8S"> <span></span> K8S
+									</label> <label class="radio-inline"> <input type="radio" name="platform"
+										id="optionsRadiosInline3" value="AWS"> <span></span> AWS
+									</label>
+								</div>
+							</div>
+							<!--  /.col-sm-9 -->
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label col-lg-2">ZONE 이름</label>
+							<div class="col-lg-10">
+								<input type="text" class="form-control" name="name">
+							</div>
+						</div>
+						<div class="btn-area text-center">
+							<button type="submit" class="btn btn-success">Submit</button>
+						</div>
+					</form>
 					</div>
 				</div>
-				<div class="form-group">
-					Platform 선택 : 
-					<input class="form-control" type="radio" name="platform" value="baremetal" />baremetal
-					<input class="form-control" type="radio" name="platform" value="K8S" />K8S
-					<input class="form-control" type="radio" name="platform" value="AWS" />AWS
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+				<div class="card mb-3">
+					<div class="card-header">
+						<h3 class="card-title">Agent 설치</h3>
+					</div>
+					<div class="card-body">
+						<div class="form-horizontal">
+							<div class="form-group ">
+								<div class="radio" data-th-each="zone : ${list}">
+									<label> <input type="radio" name="optionsRadios" id="optionsRadios1" th:onclick="|javascript:test(${zone.id})|">
+										<span></span> [[${zone.name}]]([[${zone.platform}]])
+									</label>
+								</div>
+							</div>
+							<div id="commandBlock" class="form-group" style="display:block;">
+								asdfjiokwerjfiowfjowife
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="form-group">
-					ZONE 이름 : <input class="form-control" type="text" name="name" />
-				</div>
-				<div class="form-group">
-					<input class="form-control" type="submit" value="ZONE 생성" />
-				</div>
-			</form>
+			</div>
 		</div>
 	</div>
 </body>
+<script layout:fragment="local-script">
+	function test(val) {
+		alert(val);
+	}
+</script>
 </html>

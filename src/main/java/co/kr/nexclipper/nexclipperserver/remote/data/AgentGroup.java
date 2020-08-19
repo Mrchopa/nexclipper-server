@@ -1,6 +1,6 @@
 package co.kr.nexclipper.nexclipperserver.remote.data;
 
-import co.kr.nexclipper.nexclipperserver.account.AccountsZone;
+import co.kr.nexclipper.nexclipperserver.account.entity.AccountsZone;
 
 public class AgentGroup {
 	private Long id;

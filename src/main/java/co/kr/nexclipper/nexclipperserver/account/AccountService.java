@@ -1,13 +1,19 @@
 package co.kr.nexclipper.nexclipperserver.account;
 
-import javax.transaction.Transactional;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import co.kr.nexclipper.nexclipperserver.account.entity.AccountsZone;
+import co.kr.nexclipper.nexclipperserver.account.entity.ApiKeys;
+import co.kr.nexclipper.nexclipperserver.account.repository.AccountsZoneRepository;
+import co.kr.nexclipper.nexclipperserver.account.repository.ApiKeysRepository;
 import co.kr.nexclipper.nexclipperserver.remote.KlevrClient;
 import co.kr.nexclipper.nexclipperserver.remote.data.AgentGroup;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
@@ -20,9 +26,11 @@ public class AccountService {
 	@Autowired
 	private AccountsZoneRepository zoneRepo;
 	
+	@Autowired
+	private ApiKeysRepository apiKeyRepo;
 	
 	@Autowired
-	private KlevrClient klevr;
+	private KlevrClient klevrClient;
 
 	@Transactional
 	public AccountsZone createAccountsZone(AccountsZone zone) {
@@ -39,11 +47,23 @@ public class AccountService {
 		
 		AgentGroup group = new AgentGroup(zone);
 		
-		klevr.addGroup(group);
+		// klevr 그룹 생성
+		klevrClient.addGroup(group);
 		
-		// TODO: API KEY 등록 구
-//		klevr.addApiKey(zone.getId(), )
+		// klevr API-Key 등록
+		klevrClient.addApiKey(zone.getId(), apiKeyRepo.getOne(CommonPrincipal.getPrincipal().getId()).getApiKey());
 		
 		return zone;
+	}
+	
+	@Transactional(noRollbackFor = DataIntegrityViolationException.class)
+	public void renewAccountsApiKey(Long userId) {
+		String apiKey = UUID.randomUUID().toString().replaceAll("-", "");
+		
+		ApiKeys a = new ApiKeys();
+		a.setUserId(userId);
+		a.setApiKey(apiKey);
+		
+		apiKeyRepo.saveAndFlush(a);
 	}
 }

@@ -1,6 +1,4 @@
-package co.kr.nexclipper.nexclipperserver.account;
-
-import java.time.ZonedDateTime;
+package co.kr.nexclipper.nexclipperserver.account.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,12 +6,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import co.kr.nexclipper.nexclipperserver.account.Platform;
 import co.kr.nexcloud.framework.jpa.BaseModel;
 
 
 @Entity
 @Table(name="ACCOUNTS_ZONE")
 public class AccountsZone extends BaseModel<Long> {
+	private static final long serialVersionUID = -769609915721814401L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -21,9 +22,6 @@ public class AccountsZone extends BaseModel<Long> {
 	private String platform;
 	private String description;
 	private Long userId;
-	private ZonedDateTime createdAt;
-	private ZonedDateTime updatedAt;
-	private ZonedDateTime deletedAt;
 	
 	public AccountsZone() {}
 	
@@ -63,30 +61,6 @@ public class AccountsZone extends BaseModel<Long> {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public ZonedDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(ZonedDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public ZonedDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(ZonedDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public ZonedDateTime getDeletedAt() {
-		return deletedAt;
-	}
-
-	public void setDeletedAt(ZonedDateTime deletedAt) {
-		this.deletedAt = deletedAt;
 	}
 
 	public Long getUserId() {

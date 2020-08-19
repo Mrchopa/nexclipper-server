@@ -7,12 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import co.kr.nexclipper.nexclipperserver.RequestPathConstants;
 import co.kr.nexclipper.nexclipperserver.TemplatePathConstants;
-import co.kr.nexclipper.nexclipperserver.account.AccountsZone;
+import co.kr.nexclipper.nexclipperserver.account.entity.AccountsZone;
 import co.kr.nexclipper.nexclipperserver.controller.ZoneController;
 
 @Controller

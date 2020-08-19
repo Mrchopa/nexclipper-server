@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.kr.nexclipper.nexclipperserver.RequestPathConstants;
 import co.kr.nexclipper.nexclipperserver.account.AccountService;
-import co.kr.nexclipper.nexclipperserver.account.AccountsZone;
-import co.kr.nexclipper.nexclipperserver.account.AccountsZoneRepository;
+import co.kr.nexclipper.nexclipperserver.account.entity.AccountsZone;
+import co.kr.nexclipper.nexclipperserver.account.repository.AccountsZoneRepository;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
 import co.kr.nexcloud.framework.web.HttpRuntimeException;
 import io.micrometer.core.instrument.util.StringUtils;

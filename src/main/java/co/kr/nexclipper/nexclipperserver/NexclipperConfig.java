@@ -1,6 +1,8 @@
 package co.kr.nexclipper.nexclipperserver;
 
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,16 +17,22 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.data.auditing.DateTimeProvider;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import co.kr.nexclipper.nexclipperserver.account.AccountService;
 import co.kr.nexclipper.nexclipperserver.klevr.KlevrProperties;
+import co.kr.nexcloud.framework.security.CommonPrincipal;
 import co.kr.nexcloud.framework.web.RequestParameterLoggingInterceptor;
 import co.kr.nexcloud.users.UserJoinHandler;
 import co.kr.nexcloud.users.UsersApplication;
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -38,7 +46,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 @EntityScan(basePackages = {"co.kr.nexcloud", "co.kr.nexclipper"})
 @EnableConfigurationProperties(value = KlevrProperties.class)
 @EnableFeignClients(basePackages = {"co.kr.nexclipper"})
-public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigurer {
+@EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
+public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigurer, AuditorAware<Long> {
 	public static final Logger LOG = LoggerFactory.getLogger(NexclipperConfig.class);
 	
 	ApplicationContext context;
@@ -59,10 +68,25 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 		LOG.info("addArgumentResolvers - nothing");
 	}
 	
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/webjars/**",
+									"/img/**",
+									"/css/**",
+									"/js/**")
+				.addResourceLocations(
+									"classpath:/META-INF/resources/webjars/",
+									"classpath:/templates/img/",
+									"classpath:/templates/css/",
+									"classpath:/templates/js/");
+	}
+	
 	@Bean
 	public UserJoinHandler userJoinHandler(AccountService service) {
 		return (user) -> {
-			LOG.debug("handler called for Join user.");
+			LOG.debug("handler called for Join user. - [{}]", user);
+			
+			service.renewAccountsApiKey(user.getId());
 		};
 	}
 	
@@ -81,5 +105,25 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 				.description("NexCloud NexClipper API documentation")
 				.termsOfServiceUrl("http://nexclipper.io")
 				.build();
+	}
+
+	@Override
+	public Optional<Long> getCurrentAuditor() {
+		LOG.debug("Auditor called");
+		
+		CommonPrincipal principal = CommonPrincipal.getPrincipal();
+		Optional<Long> optional = Optional.ofNullable(principal != null ? principal.getId() : null);
+		optional.orElse(0L);
+		return optional;
+	}
+	
+	@Bean
+	public LayoutDialect layoutDialect() {
+		return new LayoutDialect();
+	}
+	
+	@Bean
+	public DateTimeProvider auditingDateTimeProvider() {
+		return () -> Optional.of(ZonedDateTime.now());
 	}
 }

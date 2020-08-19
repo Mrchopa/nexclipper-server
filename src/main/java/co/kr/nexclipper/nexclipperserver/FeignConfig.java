@@ -3,6 +3,7 @@ package co.kr.nexclipper.nexclipperserver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -20,8 +21,11 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import feign.FeignException;
 import feign.RequestInterceptor;
 import feign.Response;
+import feign.codec.DecodeException;
+import feign.codec.Decoder;
 import feign.codec.ErrorDecoder;
 
 @Configuration
@@ -95,6 +99,5 @@ public class FeignConfig implements Jackson2ObjectMapperBuilderCustomizer {
 	            return "";
 	        }
 	    }
-		
 	}
 }
