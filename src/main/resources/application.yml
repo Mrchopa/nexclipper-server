@@ -18,7 +18,7 @@ nc:
       outer-url: "http://localhost:8090"
   klevr:
     command:
-      agent-install: "curl https://raw.githubusercontent.com/NexClipper/provbee/master/install/provbee.sh|K3S_SET=N K_API_KEY=\"{API_KEY}\" -e K_PLATFORM=\"{PLATFORM}\" -e K_MANAGER_URL=\"{KLEVR_URL}\" -e K_ZONE_ID=\"{ZONE_ID}\" bash -x"  
+      agent-install: "curl https://raw.githubusercontent.com/NexClipper/provbee/master/install/provbee.sh|K3S_SET=N K_API_KEY=\"{API_KEY}\" K_PLATFORM=\"{PLATFORM}\" K_MANAGER_URL=\"{KLEVR_URL}\" K_ZONE_ID=\"{ZONE_ID}\" bash -x"  
   security:
     representationDomain: localhost
     permit-all-pages:
