@@ -7,14 +7,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import co.kr.nexclipper.nexclipperserver.RequestPathConstants;
 import co.kr.nexclipper.nexclipperserver.TemplatePathConstants;
 import co.kr.nexclipper.nexclipperserver.account.entity.AccountsZone;
+import co.kr.nexclipper.nexclipperserver.controller.AccountController;
 import co.kr.nexclipper.nexclipperserver.controller.ZoneController;
+import co.kr.nexclipper.nexclipperserver.remote.RemoteProperties;
+import co.kr.nexcloud.framework.security.CommonPrincipal;
 
 @Controller
 @RequestMapping(RequestPathConstants.VIEW_ZONES)
@@ -22,11 +24,21 @@ public class ViewZoneController {
 	public static final Logger LOG = LoggerFactory.getLogger(ViewZoneController.class);
 	
 	@Autowired
-	ZoneController restZone;
+	private ZoneController restZone;
+	
+	@Autowired
+	private AccountController restAccount;
+	
+	@Autowired
+	private RemoteProperties remoteProp;
 	
 	@GetMapping("")
-	public String getZones(Model model) {
-		model.addAttribute("list", restZone.getZones());
+	public String getZones(Model model, CommonPrincipal principal) {
+		model.addAttribute("list", restZone.getZones(principal));
+		model.addAttribute("myAccount", restAccount.getMyAccount(principal));
+		model.addAttribute("klevrUrl", remoteProp.getKlevrOuterUrl());
+		
+		LOG.debug("{}", restAccount.getMyAccount(principal));
 		
 		return TemplatePathConstants.ZONE_VIEW;
 	}

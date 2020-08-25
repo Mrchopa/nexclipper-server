@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="/layout/basic_layout">
+	layout:decorate="~{layout/basic_layout}">
 <head>
 </head>
 <body>
@@ -21,7 +21,7 @@
 									<label class="radio-inline"> <input type="radio" name="platform" id="optionsRadiosInline1"
 										value="baremental" checked> <span></span> baremental
 									</label> <label class="radio-inline"> <input type="radio" name="platform"
-										id="optionsRadiosInline2" value="K8S"> <span></span> K8S
+										id="optionsRadiosInline2" value="kubernetes"> <span></span> K8S
 									</label> <label class="radio-inline"> <input type="radio" name="platform"
 										id="optionsRadiosInline3" value="AWS"> <span></span> AWS
 									</label>
@@ -36,7 +36,7 @@
 							</div>
 						</div>
 						<div class="btn-area text-center">
-							<button type="submit" class="btn btn-success">Submit</button>
+							<button type="submit" class="btn btn-success">Create</button>
 						</div>
 					</form>
 					</div>
@@ -51,13 +51,15 @@
 						<div class="form-horizontal">
 							<div class="form-group ">
 								<div class="radio" data-th-each="zone : ${list}">
-									<label> <input type="radio" name="optionsRadios" id="optionsRadios1" th:onclick="|javascript:test(${zone.id})|">
+									<label> <input type="radio" name="optionsRadios" id="optionsRadios1" th:value="${zone.id}" class="target-zone">
 										<span></span> [[${zone.name}]]([[${zone.platform}]])
 									</label>
 								</div>
 							</div>
-							<div id="commandBlock" class="form-group" style="display:block;">
-								asdfjiokwerjfiowfjowife
+							<div id="commandBlock" class="form-group" style="display:none;">
+								<span id="command-label"></span>
+								<input type="text" id="command-copy" class="form-control">
+								<button type="button" id="command-copy-btn" class="btn btn-success">Copy to clipboard</button>
 							</div>
 						</div>
 					</div>
@@ -67,8 +69,39 @@
 	</div>
 </body>
 <script layout:fragment="local-script">
-	function test(val) {
-		alert(val);
-	}
+	const apiKey = "[[${myAccount.apiKey}]]";
+	const klevrUrl = "[[${klevrUrl}]]";
+	
+	const commandCopy = $("#command-copy");
+	
+	$.when($.ready).then(function() {
+		const block = $("#commandBlock");
+		
+		$(".target-zone").bind("click", function() {
+			block.css('display', 'none');
+			
+			$.ajax({
+				method: "GET",
+				url: "/zones/commands/agent-install",
+				data: {
+					zoneId: $(this).val()
+				}
+			}).done(function(data) {
+				/* $("#command-label").text(data); */
+				commandCopy.val(data);
+			});
+			
+			block.css('display', 'block');
+		});
+		
+		$("#command-copy-btn").bind("click", function() {
+			if(commandCopy.val() != "") {
+				var element = document.getElementById("command-copy");
+				element.select();
+				element.setSelectionRange(0, 9999);
+				document.execCommand("copy");
+			}
+		});
+	});
 </script>
 </html>

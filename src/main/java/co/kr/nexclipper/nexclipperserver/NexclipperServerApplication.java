@@ -10,9 +10,6 @@ public class NexclipperServerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NexclipperServerApplication.class, args);
-//		SpringApplication app = new SpringApplication(NexclipperServerApplication.class);
-//		app.setWebApplicationType(WebApplicationType.REACTIVE);
-//		app.run(args);
 	}
 
 }

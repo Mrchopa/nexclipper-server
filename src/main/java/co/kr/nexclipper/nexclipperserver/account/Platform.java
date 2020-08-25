@@ -2,10 +2,10 @@ package co.kr.nexclipper.nexclipperserver.account;
 
 public enum Platform {
 	BAREMETAL,
-	K8S,
+	kubernetes,
 	AWS;
 	
 	public static Platform toPlatform(String str) {
-		return Platform.valueOf(str.toUpperCase());
+		return Platform.valueOf(str);
 	}
 }

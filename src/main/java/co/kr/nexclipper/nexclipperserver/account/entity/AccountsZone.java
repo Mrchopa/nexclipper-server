@@ -52,7 +52,11 @@ public class AccountsZone extends BaseModel<Long> {
 	}
 
 	public void setPlatform(String platform) {
-		this.platform = platform;
+		this.platform = Platform.toPlatform(platform).name();
+	}
+	
+	public void setPlatform(Platform platform) {
+		this.platform = platform.name();
 	}
 
 	public String getDescription() {

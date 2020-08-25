@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import co.kr.nexclipper.nexclipperserver.remote.data.AgentGroup;
 
-@FeignClient(value="klevr", url="${nc.remote.klevr.url}")
+@FeignClient(value="klevr", url="${nc.remote.klevr.inner-url}")
 public interface KlevrClient {
 	@PostMapping("/inner/groups")
 //	@Headers("Content-Type: application/json")

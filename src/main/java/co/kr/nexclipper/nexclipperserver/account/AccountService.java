@@ -14,7 +14,9 @@ import co.kr.nexclipper.nexclipperserver.account.entity.AccountsZone;
 import co.kr.nexclipper.nexclipperserver.account.entity.ApiKeys;
 import co.kr.nexclipper.nexclipperserver.account.repository.AccountsZoneRepository;
 import co.kr.nexclipper.nexclipperserver.account.repository.ApiKeysRepository;
+import co.kr.nexclipper.nexclipperserver.klevr.KlevrProperties;
 import co.kr.nexclipper.nexclipperserver.remote.KlevrClient;
+import co.kr.nexclipper.nexclipperserver.remote.RemoteProperties;
 import co.kr.nexclipper.nexclipperserver.remote.data.AgentGroup;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
 import co.kr.nexcloud.framework.web.HttpRuntimeException;
@@ -31,6 +33,12 @@ public class AccountService {
 	
 	@Autowired
 	private KlevrClient klevrClient;
+	
+	@Autowired
+	private KlevrProperties klevrProp;
+	
+	@Autowired
+	private RemoteProperties remoteProp;
 
 	@Transactional
 	public AccountsZone createAccountsZone(AccountsZone zone) {
@@ -65,5 +73,20 @@ public class AccountService {
 		a.setApiKey(apiKey);
 		
 		apiKeyRepo.saveAndFlush(a);
+	}
+	
+	public String getAgentInstallCommand(Long userId, Long zoneId) {
+		String apiKey = apiKeyRepo.getOne(userId).getApiKey();
+		AccountsZone zone = zoneRepo.findById(zoneId).orElseThrow(() -> new HttpRuntimeException(404, "does not exist ZONE for ID - " + zoneId));
+		
+		String command = klevrProp.getCommand(KlevrProperties.COMMAND_AGENT_INSTALL)
+									.replace("{API_KEY}", apiKey)
+									.replace("{PLATFORM}", zone.getPlatform())
+									.replace("{KLEVR_URL}", remoteProp.getKlevrOuterUrl())
+									.replace("{ZONE_ID}", zone.getId().toString());
+									
+		LOG.debug("agent install command : [{}]", command);
+		
+		return command;
 	}
 }

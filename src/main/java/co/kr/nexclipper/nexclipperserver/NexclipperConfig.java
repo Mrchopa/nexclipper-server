@@ -4,11 +4,15 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -28,6 +32,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import co.kr.nexclipper.nexclipperserver.account.AccountService;
 import co.kr.nexclipper.nexclipperserver.klevr.KlevrProperties;
+import co.kr.nexclipper.nexclipperserver.remote.RemoteProperties;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
 import co.kr.nexcloud.framework.web.RequestParameterLoggingInterceptor;
 import co.kr.nexcloud.users.UserJoinHandler;
@@ -44,7 +49,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 @ComponentScan(basePackages = {"co.kr.nexclipper", "co.kr.nexcloud"}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = UsersApplication.class))
 @EnableJpaRepositories(basePackages = {"co.kr.nexcloud", "co.kr.nexclipper"})
 @EntityScan(basePackages = {"co.kr.nexcloud", "co.kr.nexclipper"})
-@EnableConfigurationProperties(value = KlevrProperties.class)
+@EnableConfigurationProperties(value = {KlevrProperties.class, RemoteProperties.class})
 @EnableFeignClients(basePackages = {"co.kr.nexclipper"})
 @EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
 public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigurer, AuditorAware<Long> {
@@ -76,9 +81,9 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 									"/js/**")
 				.addResourceLocations(
 									"classpath:/META-INF/resources/webjars/",
-									"classpath:/templates/img/",
-									"classpath:/templates/css/",
-									"classpath:/templates/js/");
+									"classpath:/img/",
+									"classpath:/css/",
+									"classpath:/js/");
 	}
 	
 	@Bean
@@ -125,5 +130,25 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	@Bean
 	public DateTimeProvider auditingDateTimeProvider() {
 		return () -> Optional.of(ZonedDateTime.now());
+	}
+	
+	/**
+	 * <pre>
+	 * Tomcat8 부터 Cookie Header를 파싱하는 기본 CookieProcessor가 RFC6265를 기반으로 하고 Domain값 맨 앞자리에 "."을 붙일 경우 "."을 제거하고 파싱하게 된다.
+	 * Spring Boot에서 Embeded Tomcat을 사용 할 경우 복수의 Micro Service에서  동일한 도메인으로 쿠키가 발행되어야 하므로 Parsing 방식을 Legacy로 변경한다.
+	 * 별도의 Tomcat을 사용 할 경우 <CookieProcessor className=
+	"org.apache.tomcat.util.http.LegacyCookieProcessor" /> 를 context.xml에 추가한다.
+	 * </pre>
+	 * 
+	 * @return
+	 */
+	@Bean
+	public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> tomcatCustomizer() {
+		return factory -> {
+			if (factory instanceof TomcatServletWebServerFactory) {
+				TomcatServletWebServerFactory tomcat = (TomcatServletWebServerFactory) factory;
+				tomcat.addContextCustomizers(context -> context.setCookieProcessor(new LegacyCookieProcessor()));
+			}
+		};
 	}
 }
