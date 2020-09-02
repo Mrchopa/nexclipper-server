@@ -1,4 +1,4 @@
-package co.kr.nexclipper.nexclipperserver.remote.data;
+package co.kr.nexclipper.nexclipperserver.remote.klevr.data;
 
 import co.kr.nexclipper.nexclipperserver.account.entity.AccountsZone;
 

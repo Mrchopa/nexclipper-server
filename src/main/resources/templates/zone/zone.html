@@ -19,9 +19,9 @@
 							<div class="col-sm-9">
 								<div class="form-group">
 									<label class="radio-inline"> <input type="radio" name="platform" id="optionsRadiosInline1"
-										value="baremental" checked> <span></span> baremental
+										value="baremetal" checked> <span></span> baremetal
 									</label> <label class="radio-inline"> <input type="radio" name="platform"
-										id="optionsRadiosInline2" value="kubernetes"> <span></span> K8S
+										id="optionsRadiosInline2" value="kubernetes"> <span></span> K8s
 									</label> <label class="radio-inline"> <input type="radio" name="platform"
 										id="optionsRadiosInline3" value="AWS"> <span></span> AWS
 									</label>
@@ -54,6 +54,10 @@
 									<label> <input type="radio" name="optionsRadios" id="optionsRadios1" th:value="${zone.id}" class="target-zone">
 										<span></span> [[${zone.name}]]([[${zone.platform}]])
 									</label>
+									<div>Initialized : [[${zone.init}]] [[${zone.dashboardUrl != null ? 'Dashboard : '+zone.dashboardUrl : ''}]]</div>
+									<div data-th-each="agent : ${agentMap.get(zone.id)}" style="padding-left:10px">
+										- [[${primaryMap.get(zone.id).agentKey == agent.agentKey ? '(Primary)' : ''}]][[|${agent.ip}:${agent.port}|]] (cpu:[[${agent.core}]] / mem:[[${agent.memory}]] / disk:[[${agent.disk}]])
+									</div>
 								</div>
 							</div>
 							<div id="commandBlock" class="form-group" style="display:none;">

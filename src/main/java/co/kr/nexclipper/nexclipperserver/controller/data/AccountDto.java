@@ -1,7 +1,7 @@
 package co.kr.nexclipper.nexclipperserver.controller.data;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import co.kr.nexcloud.framework.commons.util.ToStringUtils;
 
@@ -15,8 +15,8 @@ public class AccountDto implements Serializable {
 	private String lastName;
 	private String mobile;
 	private String photo;
-	private ZonedDateTime createdAt;
-	private ZonedDateTime updatedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 	private String apiKey;
 	
 	@Override
@@ -80,19 +80,19 @@ public class AccountDto implements Serializable {
 		this.photo = photo;
 	}
 
-	public ZonedDateTime getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(ZonedDateTime createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public ZonedDateTime getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(ZonedDateTime updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 

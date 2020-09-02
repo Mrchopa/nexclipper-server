@@ -1,6 +1,6 @@
 package co.kr.nexclipper.nexclipperserver;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +25,15 @@ import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import co.kr.nexclipper.nexclipperserver.account.AccountService;
+import co.kr.nexclipper.nexclipperserver.controller.converter.EnumParameterConverter;
+import co.kr.nexclipper.nexclipperserver.controller.data.KlevrEventType;
 import co.kr.nexclipper.nexclipperserver.klevr.KlevrProperties;
 import co.kr.nexclipper.nexclipperserver.remote.RemoteProperties;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
@@ -129,7 +132,7 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	
 	@Bean
 	public DateTimeProvider auditingDateTimeProvider() {
-		return () -> Optional.of(ZonedDateTime.now());
+		return () -> Optional.of(LocalDateTime.now());
 	}
 	
 	/**
@@ -149,6 +152,13 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 				TomcatServletWebServerFactory tomcat = (TomcatServletWebServerFactory) factory;
 				tomcat.addContextCustomizers(context -> context.setCookieProcessor(new LegacyCookieProcessor()));
 			}
+		};
+	}
+	
+	@Bean
+	public WebBindingInitializer webBindingInitializer() {
+		return (binder) -> {
+			binder.registerCustomEditor(KlevrEventType.class, new EnumParameterConverter<KlevrEventType>(KlevrEventType.class));
 		};
 	}
 }

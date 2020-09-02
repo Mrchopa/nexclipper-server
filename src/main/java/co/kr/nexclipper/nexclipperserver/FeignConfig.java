@@ -57,12 +57,25 @@ public class FeignConfig implements Jackson2ObjectMapperBuilderCustomizer {
     }
 	
 	@Bean
-    public FeignErrorDecode decoder() {
-        return new FeignErrorDecode();
+	public FeignDecoder docoder() {
+		return new FeignDecoder();
+	}
+	
+	@Bean
+    public FeignErrorDecoder errorDecoder() {
+        return new FeignErrorDecoder();
     }
 	
-	static public class FeignErrorDecode implements ErrorDecoder {
-		private static final Logger LOG = LoggerFactory.getLogger(FeignErrorDecode.class);
+	static public class FeignDecoder implements Decoder {
+		@Override
+		public Object decode(Response response, Type type) throws IOException, DecodeException, FeignException {
+			return null;
+		}
+		
+	}
+	
+	static public class FeignErrorDecoder implements ErrorDecoder {
+		private static final Logger LOG = LoggerFactory.getLogger(FeignErrorDecoder.class);
 
 		@Override
 		public Exception decode(String methodKey, Response response) {

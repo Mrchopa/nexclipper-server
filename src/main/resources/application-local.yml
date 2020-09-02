@@ -6,7 +6,7 @@ logging:
     web: debug
     org.framework.security: debug
     co.kr.nexcloud.framework.jpa: info
-    co.kr.nexclipper.nexclipperserver.remote.KlevrClient: debug
+    co.kr.nexclipper.nexclipperserver.remote.klevr.KlevrClient: debug
 
 #server: 
 #  http:

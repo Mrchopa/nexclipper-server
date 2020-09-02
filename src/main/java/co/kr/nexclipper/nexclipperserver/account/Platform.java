@@ -1,7 +1,7 @@
 package co.kr.nexclipper.nexclipperserver.account;
 
 public enum Platform {
-	BAREMETAL,
+	baremetal,
 	kubernetes,
 	AWS;
 	

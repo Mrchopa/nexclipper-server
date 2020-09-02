@@ -22,6 +22,8 @@ public class AccountsZone extends BaseModel<Long> {
 	private String platform;
 	private String description;
 	private Long userId;
+	private boolean isInit;
+	private String dashboardUrl;
 	
 	public AccountsZone() {}
 	
@@ -73,5 +75,21 @@ public class AccountsZone extends BaseModel<Long> {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public boolean isInit() {
+		return isInit;
+	}
+
+	public void setInit(boolean isInit) {
+		this.isInit = isInit;
+	}
+
+	public String getDashboardUrl() {
+		return dashboardUrl;
+	}
+
+	public void setDashboardUrl(String dashboardUrl) {
+		this.dashboardUrl = dashboardUrl;
 	}
 }

@@ -18,7 +18,7 @@ nc:
       outer-url: "http://localhost:8090"
   klevr:
     command:
-      agent-install: "curl https://raw.githubusercontent.com/NexClipper/provbee/master/install/provbee.sh|K3S_SET=N K_API_KEY=\"{API_KEY}\" K_PLATFORM=\"{PLATFORM}\" K_MANAGER_URL=\"{KLEVR_URL}\" K_ZONE_ID=\"{ZONE_ID}\" bash -x"  
+      agent-install: "curl https://raw.githubusercontent.com/NexClipper/provbee/master/install/provbee.sh | K3S_SET=N K_API_KEY=\"{API_KEY}\" K_PLATFORM=\"{PLATFORM}\" K_MANAGER_URL=\"{KLEVR_URL}\" K_ZONE_ID=\"{ZONE_ID}\" bash"  
   security:
     representationDomain: localhost
     permit-all-pages:
@@ -28,6 +28,7 @@ nc:
     - "/webjars/**"
     - "/css/**"
     - "/js/**"
+    - "/events/**"
     
     jwt:
       url: /login
@@ -80,7 +81,8 @@ feign:
         connectTimeout: 3000
         readTimeout: 3000
         loggerLevel: NONE
-        errorDecoder: co.kr.nexclipper.nexclipperserver.FeignConfig.FeignErrorDecode
+        errorDecoder: co.kr.nexclipper.nexclipperserver.FeignConfig.FeignErrorDecoder
+        decoder: feign.gson.GsonDecoder
 
 hystrix:
   command:

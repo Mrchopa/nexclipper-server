@@ -15,9 +15,9 @@ import co.kr.nexclipper.nexclipperserver.account.entity.ApiKeys;
 import co.kr.nexclipper.nexclipperserver.account.repository.AccountsZoneRepository;
 import co.kr.nexclipper.nexclipperserver.account.repository.ApiKeysRepository;
 import co.kr.nexclipper.nexclipperserver.klevr.KlevrProperties;
-import co.kr.nexclipper.nexclipperserver.remote.KlevrClient;
+import co.kr.nexclipper.nexclipperserver.klevr.KlevrService;
 import co.kr.nexclipper.nexclipperserver.remote.RemoteProperties;
-import co.kr.nexclipper.nexclipperserver.remote.data.AgentGroup;
+import co.kr.nexclipper.nexclipperserver.remote.klevr.data.AgentGroup;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
 import co.kr.nexcloud.framework.web.HttpRuntimeException;
 
@@ -32,7 +32,7 @@ public class AccountService {
 	private ApiKeysRepository apiKeyRepo;
 	
 	@Autowired
-	private KlevrClient klevrClient;
+	private KlevrService klevrService;
 	
 	@Autowired
 	private KlevrProperties klevrProp;
@@ -54,12 +54,7 @@ public class AccountService {
 		LOG.debug("persist zone : [{}]", zone);
 		
 		AgentGroup group = new AgentGroup(zone);
-		
-		// klevr 그룹 생성
-		klevrClient.addGroup(group);
-		
-		// klevr API-Key 등록
-		klevrClient.addApiKey(zone.getId(), apiKeyRepo.getOne(CommonPrincipal.getPrincipal().getId()).getApiKey());
+		klevrService.createAgentGroup(group, apiKeyRepo.getOne(CommonPrincipal.getPrincipal().getId()).getApiKey());
 		
 		return zone;
 	}
