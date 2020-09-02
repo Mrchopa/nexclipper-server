@@ -27,6 +27,7 @@ import feign.Response;
 import feign.codec.DecodeException;
 import feign.codec.Decoder;
 import feign.codec.ErrorDecoder;
+import feign.gson.GsonDecoder;
 
 @Configuration
 public class FeignConfig implements Jackson2ObjectMapperBuilderCustomizer {
@@ -57,8 +58,8 @@ public class FeignConfig implements Jackson2ObjectMapperBuilderCustomizer {
     }
 	
 	@Bean
-	public FeignDecoder docoder() {
-		return new FeignDecoder();
+	public Decoder docoder() {
+		return new GsonDecoder();
 	}
 	
 	@Bean

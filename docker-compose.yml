@@ -1,10 +1,10 @@
 version: '3'
-services: 
+services:
    klevr-db:
       image: mariadb
       restart: always
-#      volumes:
-#         - ./data/mariadb:/var/lib/mysql
+      volumes:
+         - ./data/mariadb:/var/lib/mysql
       environment:
          - MYSQL_ROOT_PASSWORD=root
       healthcheck:
@@ -17,9 +17,9 @@ services:
 
    klevr-manager:
       image: klevry/klevr-manager:latest
-      ports: 
+      ports:
          - "8090:8090"
-      depends_on: 
+      depends_on:
          - klevr-db
       links:
          - klevr-db
@@ -31,8 +31,8 @@ services:
             /init-db.sh root root klevr-db 3306 klevr ./conf/klevr-manager-db.sql
             chmod +x /wait-for-it.sh
             /wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
-            /klevr-manager -c ./conf/klevr-manager-compose.yml
-            
+            /klevr-manager -c ./conf/klevr-manager-compose.yml -hook "http://nexclipper-server:8080/events/klevr"
+
    nexclipper-server:
       image: mrchopa/nexclipper-server:latest
       ports:
@@ -42,10 +42,11 @@ services:
       links:
          - klevr-db
       environment:
-         NC_REMOTE_KLEVR_INNER-URL: "http://192.168.8.51:8090"
-         NC_REMOTE_KLEVR_OUTER-URL: "http://192.168.8.51:8090"
-         NC_SECURITY_REPRESENTATION-DOMAIN: test.com
-         SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI: "http://test.com:8080/login/oauth2/code/{registrationId}"
+        NC_REMOTE_KLEVR_INNER-URL: "http://192.168.8.51:8090"
+        NC_REMOTE_KLEVR_OUTER-URL: "http://192.168.8.51:8090"
+        NC_KLEVR_COMMAND_AGENT-INSTALL: "curl -sL gg.gg/provbee | K3S_SET=N K_API_KEY=\"{API_KEY}\" K_PLATFORM=\"{PLATFORM}\" K_MANAGER_URL=\"{KLEVR_URL}\" K_ZONE_ID=\"{ZONE_ID}\" bash"
+        NC_SECURITY_REPRESENTATION-DOMAIN: test.com
+        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI: "http://test.com:8080/login/oauth2/code/{registrationId}"
       command:
          - bash
          - -c

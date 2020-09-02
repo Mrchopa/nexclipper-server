@@ -35,6 +35,8 @@ CREATE TABLE `ACCOUNTS_ZONE` (
   `IS_DELETED` tinyint(1) NOT NULL DEFAULT 0,
   `CREATED_BY` bigint(20) unsigned DEFAULT 0,
   `UPDATED_BY` bigint(20) unsigned DEFAULT 0,
+  `IS_INIT` tinyint(1) DEFAULT 0 COMMENT 'ZONE 초기화 작업 수행 여부',
+  `DASHBOARD_URL` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
