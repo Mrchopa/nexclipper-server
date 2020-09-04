@@ -40,9 +40,9 @@ import co.kr.nexcloud.framework.security.CommonPrincipal;
 import co.kr.nexcloud.framework.web.RequestParameterLoggingInterceptor;
 import co.kr.nexcloud.users.UserJoinHandler;
 import co.kr.nexcloud.users.UsersApplication;
+import io.swagger.annotations.Api;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
@@ -100,18 +100,22 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	
 	@Bean
 	public Docket docket() {
+		String version ="v1";
+		
 		return new Docket(DocumentationType.SWAGGER_2)
 				.groupName("NexClipper-api")
 				.useDefaultResponseMessages(true)
-				.apiInfo(apiInfo())
-				.select().apis(RequestHandlerSelectors.basePackage("co.kr.nexclipper")).paths(PathSelectors.any())
+				.groupName(version)
+				.apiInfo(apiInfo(version))
+				.select().apis(RequestHandlerSelectors.withClassAnnotation(Api.class))//.basePackage("co.kr.nexclipper")).paths(PathSelectors.any())
 				.build();
 	}
 	
-	private ApiInfo apiInfo() {
+	private ApiInfo apiInfo(String version) {
 		return new ApiInfoBuilder().title("NexClipper API")
 				.description("NexCloud NexClipper API documentation")
-				.termsOfServiceUrl("http://nexclipper.io")
+				.termsOfServiceUrl("http://console.nexclipper.io")
+				.version(version)
 				.build();
 	}
 

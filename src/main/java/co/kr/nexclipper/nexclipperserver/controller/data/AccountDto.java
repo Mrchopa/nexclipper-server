@@ -4,19 +4,41 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import co.kr.nexcloud.framework.commons.util.ToStringUtils;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+@ApiModel("계정 정보 DTO")
 public class AccountDto implements Serializable {
 	private static final long serialVersionUID = -9201932630452101965L;
 	
+	@ApiModelProperty("계정 ID")
 	private Long id;
+	
+	@ApiModelProperty("계정 이름(nickname)")
 	private String name;
+
+	@ApiModelProperty("이메일")
 	private String email;
+
+	@ApiModelProperty("사용자 이름")
 	private String firstName;
+
+	@ApiModelProperty("사용자 성")
 	private String lastName;
+
+	@ApiModelProperty("핸드폰")
 	private String mobile;
+
+	@ApiModelProperty("사진")
 	private String photo;
+
+	@ApiModelProperty("생성일")
 	private LocalDateTime createdAt;
+
+	@ApiModelProperty("수정일")
 	private LocalDateTime updatedAt;
+
+	@ApiModelProperty("계정 API key")
 	private String apiKey;
 	
 	@Override

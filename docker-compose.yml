@@ -42,11 +42,11 @@ services:
       links:
          - klevr-db
       environment:
-        NC_REMOTE_KLEVR_INNER-URL: "http://klevr-manager:8090"
-        NC_REMOTE_KLEVR_OUTER-URL: "http://console.nexclipper.io:8090"
+        NC_REMOTE_KLEVR_INNER-URL: "http://192.168.8.51:8090"
+        NC_REMOTE_KLEVR_OUTER-URL: "http://192.168.8.51:8090"
         NC_KLEVR_COMMAND_AGENT-INSTALL: "curl -sL gg.gg/provbee | K3S_SET=N K_API_KEY=\"{API_KEY}\" K_PLATFORM=\"{PLATFORM}\" K_MANAGER_URL=\"{KLEVR_URL}\" K_ZONE_ID=\"{ZONE_ID}\" bash"
-        NC_SECURITY_REPRESENTATION-DOMAIN: nexclipper.io
-        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI: "http://console.nexclipper.io:8080/login/oauth2/code/{registrationId}"
+        NC_SECURITY_REPRESENTATION-DOMAIN: test.com
+        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI: "http://test.com:8080/login/oauth2/code/{registrationId}"
       command:
          - bash
          - -c

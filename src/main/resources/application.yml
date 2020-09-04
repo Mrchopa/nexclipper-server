@@ -24,6 +24,7 @@ nc:
     permit-all-pages:
     - "/login**"
     - "/swagger**/**"
+    - "/swagger-resources"
     - "/v2/api-docs/**"
     - "/webjars/**"
     - "/css/**"
