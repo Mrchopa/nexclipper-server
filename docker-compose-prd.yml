@@ -51,8 +51,6 @@ services:
          - bash
          - -c
          - |
-            chmod +x /app/wait-for-it.sh
             /app/wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
-            chmod +x /app/init-db.sh
             /app/init-db.sh root ${MYSQLPASSWD} klevr-db 3306 nexclipper /app/conf/init.sql
             java -Dspring.profiles.active=compose -jar /app/*.jar
