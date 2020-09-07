@@ -7,7 +7,7 @@ import co.kr.nexcloud.framework.commons.util.ToStringUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel("계정 정보 DTO")
+@ApiModel(description = "계정 정보 DTO")
 public class AccountDto implements Serializable {
 	private static final long serialVersionUID = -9201932630452101965L;
 	

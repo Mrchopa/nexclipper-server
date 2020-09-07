@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty.AccessMode;
 
 @Entity
 @Table(name="ACCOUNTS_ZONE")
-@ApiModel("계정별 ZONE 데이터")
+@ApiModel(description = "계정별 ZONE 데이터")
 public class AccountsZone extends BaseModel<Long> {
 	private static final long serialVersionUID = -769609915721814401L;
 	
