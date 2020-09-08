@@ -34,7 +34,7 @@ services:
             /klevr-manager -c ./conf/klevr-manager-compose.yml -hook "http://nexclipper-server:8080/events/klevr"
 
    nexclipper-server:
-      image: mrchopa/nexclipper-server:latest
+      image: nexclipper/nexclipper-server:latest
       ports:
          - "8080:8080"
       depends_on:
