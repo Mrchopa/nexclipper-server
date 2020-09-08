@@ -21,10 +21,9 @@ USE `nexclipper`;
 -- Table structure for table `ACCOUNTS_ZONE`
 --
 
-DROP TABLE IF EXISTS `ACCOUNTS_ZONE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ACCOUNTS_ZONE` (
+CREATE TABLE IF NOT EXISTS `ACCOUNTS_ZONE` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `NAME` varchar(200) NOT NULL,
   `PLATFORM` varchar(45) NOT NULL,
@@ -45,10 +44,9 @@ CREATE TABLE `ACCOUNTS_ZONE` (
 -- Table structure for table `API_KEYS`
 --
 
-DROP TABLE IF EXISTS `API_KEYS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `API_KEYS` (
+CREATE TABLE IF NOT EXISTS `API_KEYS` (
   `USER_ID` bigint(20) unsigned NOT NULL,
   `API_KEY` varchar(100) NOT NULL,
   `CREATED_AT` timestamp NULL DEFAULT current_timestamp(),
@@ -62,13 +60,31 @@ CREATE TABLE `API_KEYS` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `JOIN_FILTERS`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF NOT EXISTS `JOIN_FILTERS` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `PATTERN` varchar(200) DEFAULT NULL COMMENT '검색 필터 패턴',
+  `TYPE` varchar(10) DEFAULT NULL COMMENT '필터 타입(whitelist / blacklist)',
+  `CREATED_AT` timestamp NULL DEFAULT current_timestamp(),
+  `UPDATED_AT` timestamp NULL DEFAULT NULL,
+  `IS_DELETED` tinyint(1) DEFAULT 0,
+  `CREATED_BY` varchar(45) DEFAULT NULL,
+  `UPDATED_BY` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='회원가입 필터 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `OAUTH_USERS`
 --
 
-DROP TABLE IF EXISTS `OAUTH_USERS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `OAUTH_USERS` (
+CREATE TABLE IF NOT EXISTS `OAUTH_USERS` (
   `OAUTH_ID` varchar(45) NOT NULL,
   `OAUTH_CLIENT_ID` varchar(45) NOT NULL,
   `USER_ID` bigint(20) NOT NULL,
@@ -85,10 +101,9 @@ CREATE TABLE `OAUTH_USERS` (
 -- Table structure for table `USERS`
 --
 
-DROP TABLE IF EXISTS `USERS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `USERS` (
+CREATE TABLE IF NOT EXISTS `USERS` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `NAME` varchar(100) NOT NULL,
   `EMAIL` varchar(200) DEFAULT NULL,
@@ -119,3 +134,7 @@ CREATE TABLE `USERS` (
 CREATE USER 'nexclipper'@'%' identified by 'nexclipper';
 
 GRANT ALL PRIVILEGES ON nexclipper.* to 'nexclipper'@'%';
+
+ALTER TABLE `nexclipper`.`ACCOUNTS_ZONE` 
+ADD COLUMN `CLUSTER_NAME` VARCHAR(300) NULL AFTER `DASHBOARD_URL`,
+ADD COLUMN `TAGS` VARCHAR(500) NULL AFTER `CLUSTER_NAME`;

@@ -27,7 +27,7 @@ services:
          - bash
          - -c
          - |
-            /init-db.sh root ${MYSQLPASSWD} klevr-db 3306 klevr ./conf/klevr-manager-db.sql
+            /init-db.sh root ${MYSQLPASSWD} klevr-db 3306 klevr ./conf/klevr-manager-db.sql /var/lib/mysql
             /wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
             /klevr-manager -c ./conf/klevr-manager-compose.yml -hook "http://nexclipper-server:8080/events/klevr"
 
@@ -50,5 +50,5 @@ services:
          - -c
          - |
             /app/wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
-            /app/init-db.sh root ${MYSQLPASSWD} klevr-db 3306 nexclipper /app/conf/init.sql
+            /app/init-db.sh root ${MYSQLPASSWD} klevr-db 3306 nexclipper /app/conf/init.sql /var/lib/mysql
             java -Dspring.profiles.active=compose -jar /app/*.jar

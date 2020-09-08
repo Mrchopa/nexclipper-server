@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import co.kr.nexclipper.nexclipperserver.account.Platform;
 import co.kr.nexcloud.framework.jpa.BaseModel;
@@ -41,6 +42,48 @@ public class AccountsZone extends BaseModel<Long> {
 	
 	@ApiModelProperty(value = "ZONE에 생성된 대시보드 URL", accessMode = AccessMode.READ_ONLY)
 	private String dashboardUrl;
+	
+	@ApiModelProperty(value = "클러스터 이름", accessMode = AccessMode.READ_ONLY)
+	private String clusterName;
+	
+	@ApiModelProperty(value = "Tag (','로 구분)", accessMode = AccessMode.READ_ONLY)
+	private String tags;
+	
+	@Transient
+	@ApiModelProperty(value = "에이전트 상태", accessMode = AccessMode.READ_ONLY)
+	private String status;
+	
+	@Transient
+	@ApiModelProperty(value = "K8s cluster version", accessMode = AccessMode.READ_ONLY)
+	private String version;
+
+	@Transient
+	@ApiModelProperty(value = "K8s API endpoint", accessMode = AccessMode.READ_ONLY)
+	private String endpoint;
+	
+	@Transient
+	@ApiModelProperty(value = "K8s 계정", accessMode = AccessMode.READ_ONLY)
+	private String account;
+	
+	@Transient
+	@ApiModelProperty(value = "클러스터 사이즈", accessMode = AccessMode.READ_ONLY)
+	private int size;
+	
+	@Transient
+	@ApiModelProperty(value = "프로메테우스 URL", accessMode = AccessMode.READ_ONLY)
+	private String prometheusUrl;
+	
+	@Transient
+	@ApiModelProperty(value = "complete 상태인 task 개수", accessMode = AccessMode.READ_ONLY)
+	private int completedTaskCount;
+	
+	@Transient
+	@ApiModelProperty(value = "in-progress 상태인 task 개수", accessMode = AccessMode.READ_ONLY)
+	private int inprogressTaskCount;
+	
+	@Transient
+	@ApiModelProperty(value = "pending 상태인 task 개수", accessMode = AccessMode.READ_ONLY, hidden = false)
+	private int pendingTaskCount;
 	
 	public AccountsZone() {}
 	
@@ -108,5 +151,93 @@ public class AccountsZone extends BaseModel<Long> {
 
 	public void setDashboardUrl(String dashboardUrl) {
 		this.dashboardUrl = dashboardUrl;
+	}
+
+	public String getClusterName() {
+		return clusterName;
+	}
+
+	public void setClusterName(String clusterName) {
+		this.clusterName = clusterName;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getEndpoint() {
+		return endpoint;
+	}
+
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	public String getPrometheusUrl() {
+		return prometheusUrl;
+	}
+
+	public void setPrometheusUrl(String prometheusUrl) {
+		this.prometheusUrl = prometheusUrl;
+	}
+
+	public int getCompletedTaskCount() {
+		return completedTaskCount;
+	}
+
+	public void setCompletedTaskCount(int completedTaskCount) {
+		this.completedTaskCount = completedTaskCount;
+	}
+
+	public int getInprogressTaskCount() {
+		return inprogressTaskCount;
+	}
+
+	public void setInprogressTaskCount(int inprogressTaskCount) {
+		this.inprogressTaskCount = inprogressTaskCount;
+	}
+
+	public int getPendingTaskCount() {
+		return pendingTaskCount;
+	}
+
+	public void setPendingTaskCount(int pendingTaskCount) {
+		this.pendingTaskCount = pendingTaskCount;
 	}
 }

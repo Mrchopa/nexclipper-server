@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(RequestPathConstants.ZONES)
+@RequestMapping(RequestPathConstants.ACCOUNTS)
 @Api(value = "계정과 관련한 서비스를 처리하는 API 컨트롤러")
 public class AccountController {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountController.class);
