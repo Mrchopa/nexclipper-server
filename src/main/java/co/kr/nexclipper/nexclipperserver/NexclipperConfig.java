@@ -1,5 +1,7 @@
 package co.kr.nexclipper.nexclipperserver;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +10,7 @@ import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -36,8 +39,12 @@ import co.kr.nexclipper.nexclipperserver.controller.converter.EnumParameterConve
 import co.kr.nexclipper.nexclipperserver.controller.data.KlevrEventType;
 import co.kr.nexclipper.nexclipperserver.klevr.KlevrProperties;
 import co.kr.nexclipper.nexclipperserver.remote.RemoteProperties;
+import co.kr.nexcloud.framework.commons.util.StackTraceUtils;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
+import co.kr.nexcloud.framework.web.HttpRuntimeException;
 import co.kr.nexcloud.framework.web.RequestParameterLoggingInterceptor;
+import co.kr.nexcloud.users.LoginHandlePostHandler;
+import co.kr.nexcloud.users.LoginHandlePreHandler;
 import co.kr.nexcloud.users.UserJoinHandler;
 import co.kr.nexcloud.users.UsersApplication;
 import io.swagger.annotations.Api;
@@ -96,6 +103,63 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 			
 			service.renewAccountsApiKey(user.getId());
 		};
+	}
+	
+	@Bean
+	public LoginHandlePreHandler loginPreHandler(@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
+		return (request, response, authentication, exception) -> {
+			try {
+				if(exception != null) {
+					if(LOG.isDebugEnabled()) {
+						response.sendRedirect(redirectUrl
+								+"?loginSuccess=false&message="+URLEncoder.encode("OAuth authentication failed.", "UTF-8")
+								+"&detail="+URLEncoder.encode(getErrorDetail(exception), "UTF-8"));
+					}
+					else {
+						response.sendRedirect(redirectUrl+"?loginSuccess=false&message="+URLEncoder.encode("OAuth authentication failed.", "UTF-8"));
+					}
+				}
+			} catch(Exception e) {
+				LOG.error(e.getMessage(), e);
+				
+				throw new HttpRuntimeException(500, e.getMessage(), e);
+			}
+		};
+	}
+	
+	@Bean
+	public LoginHandlePostHandler loginPostHandler(@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
+		return (request, response, user, exception) -> {
+			try {
+				if(exception != null) {
+					if(LOG.isDebugEnabled()) {
+						response.sendRedirect(redirectUrl
+								+"?loginSuccess=false&message="+URLEncoder.encode(exception.getMessage(), "UTF-8")
+								+"&detail="+URLEncoder.encode(getErrorDetail(exception), "UTF-8"));
+					}
+					else {
+						response.sendRedirect(redirectUrl+"?loginSuccess=false&message="+URLEncoder.encode(exception.getMessage(), "UTF-8"));
+					}
+				}
+				else {
+					response.sendRedirect(redirectUrl+"?new="+user.isFirstLogin()+"&loginSuccess=true");
+				}
+			} catch(Exception e) {
+				LOG.error(e.getMessage(), e);
+				
+				throw new HttpRuntimeException(500, e.getMessage(), e);
+			}
+		};
+	}
+	
+	private String getErrorDetail(Exception e) {
+		String detail = StackTraceUtils.getString(e);
+		
+		if(detail.length() > 1000) {
+			detail = detail.substring(0, 1000);
+		}
+		
+		return detail;
 	}
 	
 	@Bean

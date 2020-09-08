@@ -30,6 +30,12 @@ nc:
     - "/css/**"
     - "/js/**"
     - "/events/**"
+  users:
+    join-filter-method: whitelist
+    login:
+      handler:
+        response-type: redirect #rest, view, redirect
+        redirect-url: http://localhost:8080
     
     jwt:
       url: /login
