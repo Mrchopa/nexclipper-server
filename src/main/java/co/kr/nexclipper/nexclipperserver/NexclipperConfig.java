@@ -43,8 +43,8 @@ import co.kr.nexcloud.framework.commons.util.StackTraceUtils;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
 import co.kr.nexcloud.framework.web.HttpRuntimeException;
 import co.kr.nexcloud.framework.web.RequestParameterLoggingInterceptor;
-import co.kr.nexcloud.users.LoginHandlePostHandler;
-import co.kr.nexcloud.users.LoginHandlePreHandler;
+import co.kr.nexcloud.users.OAuthLoginPostHandler;
+import co.kr.nexcloud.users.OAuthLoginPreHandler;
 import co.kr.nexcloud.users.UserJoinHandler;
 import co.kr.nexcloud.users.UsersApplication;
 import io.swagger.annotations.Api;
@@ -106,7 +106,7 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	}
 	
 	@Bean
-	public LoginHandlePreHandler loginPreHandler(@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
+	public OAuthLoginPreHandler loginPreHandler(@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
 		return (request, response, authentication, exception) -> {
 			try {
 				if(exception != null) {
@@ -128,7 +128,7 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	}
 	
 	@Bean
-	public LoginHandlePostHandler loginPostHandler(@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
+	public OAuthLoginPostHandler loginPostHandler(@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
 		return (request, response, user, exception) -> {
 			try {
 				if(exception != null) {
