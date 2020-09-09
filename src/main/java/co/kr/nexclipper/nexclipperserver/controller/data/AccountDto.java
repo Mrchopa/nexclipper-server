@@ -32,10 +32,10 @@ public class AccountDto implements Serializable {
 	@ApiModelProperty("사진")
 	private String photo;
 
-	@ApiModelProperty("생성일")
+	@ApiModelProperty("생성일시(UTC)")
 	private LocalDateTime createdAt;
 
-	@ApiModelProperty("수정일")
+	@ApiModelProperty("수정일시(UTC)")
 	private LocalDateTime updatedAt;
 
 	@ApiModelProperty("계정 API key")

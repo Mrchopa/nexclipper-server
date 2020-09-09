@@ -22,7 +22,7 @@ public class KlevrEventDto implements Serializable {
 	@ApiModelProperty(value = "account zone ID")
 	private Long groupId;
 	
-	@ApiModelProperty(value = "이벤트가 발생한 시")
+	@ApiModelProperty(value = "이벤트가 발생한 시간 (UTC)")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
 	private LocalDateTime eventTime;
 	

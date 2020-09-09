@@ -22,7 +22,7 @@ public class AccountsZone extends BaseModel<Long> {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@ApiModelProperty(value = "ZONE ID", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "ZONE ID", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private Long id;
 	
 	@ApiModelProperty(value = "ZONE 이름", required = true)
@@ -34,55 +34,55 @@ public class AccountsZone extends BaseModel<Long> {
 	@ApiModelProperty(value = "ZONE 설명")
 	private String description;
 	
-	@ApiModelProperty(value = "ZONE 소유자 계정 ID", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "ZONE 소유자 계정 ID", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private Long userId;
 	
-	@ApiModelProperty(value = "ZONE 초기화 완료 여부(primary agent initialize)", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "ZONE 초기화 완료 여부(primary agent initialize)", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private boolean isInit;
 	
-	@ApiModelProperty(value = "ZONE에 생성된 대시보드 URL", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "ZONE에 생성된 대시보드 URL", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String dashboardUrl;
 	
-	@ApiModelProperty(value = "클러스터 이름", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "클러스터 이름", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String clusterName;
 	
-	@ApiModelProperty(value = "Tag (','로 구분)", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "Tag (','로 구분)", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String tags;
 	
 	@Transient
-	@ApiModelProperty(value = "에이전트 상태", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "에이전트 상태", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String status;
 	
 	@Transient
-	@ApiModelProperty(value = "K8s cluster version", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "K8s cluster version", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String version;
 
 	@Transient
-	@ApiModelProperty(value = "K8s API endpoint", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "K8s API endpoint", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String endpoint;
 	
 	@Transient
-	@ApiModelProperty(value = "K8s 계정", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "K8s 계정", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String account;
 	
 	@Transient
-	@ApiModelProperty(value = "클러스터 사이즈", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "클러스터 사이즈", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private int size;
 	
 	@Transient
-	@ApiModelProperty(value = "프로메테우스 URL", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "프로메테우스 URL", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String prometheusUrl;
 	
 	@Transient
-	@ApiModelProperty(value = "complete 상태인 task 개수", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "complete 상태인 task 개수", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private int completedTaskCount;
 	
 	@Transient
-	@ApiModelProperty(value = "in-progress 상태인 task 개수", accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "in-progress 상태인 task 개수", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private int inprogressTaskCount;
 	
 	@Transient
-	@ApiModelProperty(value = "pending 상태인 task 개수", accessMode = AccessMode.READ_ONLY, hidden = false)
+	@ApiModelProperty(value = "pending 상태인 task 개수", readOnly = true, accessMode = AccessMode.READ_ONLY, hidden = false)
 	private int pendingTaskCount;
 	
 	public AccountsZone() {}
