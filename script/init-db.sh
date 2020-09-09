@@ -22,6 +22,7 @@ EXISTS=$(${CMD_PRE} --execute "show databases" | grep "${SCHEME}")
 
 if [[ ${EXISTS} != "" && ${EXPORT_PATH} != "" ]] ; then
 	echo "=============== start export for backup scheme ==============="
+	mkdir ${EXPORT_PATH}
 	CMD=$(mysqldump --user=${USERNAME} --password=${PASSWORD} --host=${HOST} --port=${PORT} -e --single-transaction -c ${SCHEME} > ${EXPORT_FILE})
 	echo "=============== complete export for backup scheme ==============="
 fi

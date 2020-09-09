@@ -1,6 +1,5 @@
 package co.kr.nexclipper.nexclipperserver;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -130,6 +129,8 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	@Bean
 	public OAuthLoginPostHandler loginPostHandler(@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
 		return (request, response, user, exception) -> {
+			LOG.debug("redirect url : [{}]", redirectUrl);
+			
 			try {
 				if(exception != null) {
 					if(LOG.isDebugEnabled()) {
