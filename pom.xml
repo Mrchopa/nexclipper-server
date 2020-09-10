@@ -146,17 +146,6 @@
 		</repository>
 		
 		<repository>
-			<id>nexus-snapshots</id>
-			<url>https://lib.nexclipper.io/repository/nexcloud-snapshots/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		
-		<repository>
 	        <snapshots>
 	            <enabled>false</enabled>
 	        </snapshots>
@@ -164,5 +153,48 @@
 	        <name>jcenter</name>
 	        <url>http://jcenter.bintray.com</url>
 	    </repository>
+	    
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</repository>
 	</repositories>
+	
+	<pluginRepositories>
+	    <!-- <pluginRepository>
+	      <id>central</id>
+	      <url>https://lib.mzdev.kr/repository/maven-central/</url>
+	      <releases>
+	            <enabled>true</enabled>
+	        </releases>
+	      <snapshots>
+	            <enabled>true</enabled>
+	      </snapshots>
+	    </pluginRepository> -->
+	    
+	    <pluginRepository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>jcenter-releases</id>
+            <name>jcenter</name>
+            <url>https://jcenter.bintray.com/</url>
+        </pluginRepository>
+  	</pluginRepositories>
+  	
+  	<distributionManagement>
+		<site>
+	       <id>${project.artifactId}-site</id>
+	       <url>${project.baseUri}</url>
+	    </site>
+		<repository>
+			<id>nexus</id>
+			<url>https://lib.nexclipper.io/repository/nexcloud-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>https://lib.nexclipper.io/repository/nexcloud-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

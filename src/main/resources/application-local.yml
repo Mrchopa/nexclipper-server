@@ -17,6 +17,12 @@ nc:
   remote:
     klevr:
       url: "http://localhost:8090"
+  security:
+    representationDomain: localhost
+  users:
+    login:
+      handler:
+        redirect-url: http://localhost:8080
       
 feign:
   client:
