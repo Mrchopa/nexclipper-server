@@ -1,0 +1,45 @@
+logging:
+  level:
+    co.kr.nexcloud: debug
+    co.kr.nexclipper: debug
+#    org.thymeleaf: debug
+    web: debug
+    org.framework.security: debug
+    co.kr.nexcloud.framework.jpa: info
+    co.kr.nexclipper.nexclipperserver.remote.klevr.KlevrClient: debug
+
+#server: 
+#  http:
+#    port: 80
+#    host: 0.0.0.0
+
+nc:
+  remote:
+    klevr:
+      url: "http://localhost:8090"
+  security:
+    representationDomain: localhost
+  users:
+    login:
+      handler:
+        redirect-url: http://localhost:8080
+      
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full #none #basic #FULL
+        connectTimeout: 2000
+        readTimeout: 2000
+  hystrix:
+    enabled: true
+    
+spring:
+  datasource:
+    url: "jdbc:mariadb://192.168.8.51:3306/nexclipper?useSSL=false&autoReconnect=true&characterEncoding=utf8"
+  jpa:
+    properties:
+      hibernate:
+        use_sql_comments: true
+        show_sql: true
+        format_sql: true

@@ -16,7 +16,7 @@ logging:
 nc:
   remote:
     klevr:
-      url: "http://localhost:8090"
+      url: "http://192.168.8.51:8090"
   security:
     representationDomain: localhost
   users:

@@ -50,9 +50,9 @@ public class ZoneController {
 	
 	@PostMapping
 	@ApiOperation(value="ZONE을 생성한다.")
-	public void addZone(
+	public AccountsZone addZone(
 			@ApiParam(required = true, value = "AccountsZone JSON 데이터") @RequestBody AccountsZone zone) {
-		service.createAccountsZone(zone);
+		return service.createAccountsZone(zone);
 	}
 	
 	@GetMapping("/commands/agent-install")

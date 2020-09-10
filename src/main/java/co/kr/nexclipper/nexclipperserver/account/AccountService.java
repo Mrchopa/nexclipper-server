@@ -49,12 +49,12 @@ public class AccountService {
 		if(StringUtils.isEmpty(zone.getName())) throw new HttpRuntimeException(400, "Required fields are missing - name");
 		if(StringUtils.isEmpty(zone.getPlatform())) throw new HttpRuntimeException(400, "Required fields are missing - platform");
 		
-		zoneRepo.saveAndFlush(zone);
+		zone = zoneRepo.saveAndFlush(zone);
 		
 		LOG.debug("persist zone : [{}]", zone);
 		
 		AgentGroup group = new AgentGroup(zone);
-		klevrService.createAgentGroup(group, apiKeyRepo.getOne(CommonPrincipal.getPrincipal().getId()).getApiKey());
+//		klevrService.createAgentGroup(group, apiKeyRepo.getOne(CommonPrincipal.getPrincipal().getId()).getApiKey());
 		
 		return zone;
 	}
