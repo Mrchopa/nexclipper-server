@@ -1,16 +1,24 @@
 package co.kr.nexclipper.nexclipperserver.klevr;
 
+import java.util.Map;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "nc.klevr")
 public class KlevrProperties {
-	private String url;
+	public static final String COMMAND_AGENT_INSTALL = "agent-install";
+	
+	private Map<String, String> command;
 
-	public String getUrl() {
-		return url;
+	public Map<String, String> getCommand() {
+		return command;
+	}
+	
+	public String getCommand(String key) {
+		return command.get(key);
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setCommand(Map<String, String> command) {
+		this.command = command;
 	}
 }

@@ -14,15 +14,29 @@ logging:
 nc:
   remote:
     klevr:
-      url: "http://localhost:8081"
-    
+      inner-url: "http://localhost:8090"
+      outer-url: "http://localhost:8090"
+  klevr:
+    command:
+      agent-install: "curl https://raw.githubusercontent.com/NexClipper/provbee/master/install/provbee.sh | K3S_SET=N K_API_KEY=\"{API_KEY}\" K_PLATFORM=\"{PLATFORM}\" K_MANAGER_URL=\"{KLEVR_URL}\" K_ZONE_ID=\"{ZONE_ID}\" bash"  
   security:
     representationDomain: localhost
     permit-all-pages:
     - "/login**"
     - "/swagger**/**"
+    - "/swagger-resources"
     - "/v2/api-docs/**"
     - "/webjars/**"
+    - "/css/**"
+    - "/js/**"
+    - "/events/**"
+  users:
+    join-filter-method: whitelist
+    login:
+      handler:
+        response-type: redirect #rest, view, redirect
+        redirect-url: http://localhost:8080
+    
     jwt:
       url: /login
       header: X-AUTHORIZATION
@@ -71,20 +85,33 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 2000
-        readTimeout: 2000
+        connectTimeout: 3000
+        readTimeout: 3000
         loggerLevel: NONE
+        errorDecoder: co.kr.nexclipper.nexclipperserver.FeignConfig.FeignErrorDecoder
+        decoder: feign.gson.GsonDecoder
 
-hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 2000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread.timeoutInMilliseconds: 2000
+          strategy: SEMAPHORE
           
 spring:
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+      fail-on-empty-beans: false
   jpa:
     hibernate:
       naming:
         physical-strategy: co.kr.nexcloud.framework.jpa.SnakeCaseNamingStrategy
   
   thymeleaf:
-    prefix: classpath:templates/
+    prefix: classpath:/templates/
     suffix: .html
     mode: HTML
     cache: false

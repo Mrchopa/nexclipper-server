@@ -1,0 +1,63 @@
+version: '3'
+services:
+   klevr-db:
+      image: mariadb
+      restart: always
+      volumes:
+         - ./data/mariadb:/var/lib/mysql
+      environment:
+         - MYSQL_ROOT_PASSWORD=root
+      healthcheck:
+         test: "/usr/bin/mysql --user=root --password=root --execute \"show databases;\""
+         interval: 3s
+         timeout: 1s
+         retries: 10
+      ports:
+         - "3306:3306"
+
+   klevr-manager:
+      image: klevry/klevr-manager:latest
+      ports:
+         - "8090:8090"
+      depends_on:
+         - klevr-db
+      links:
+         - klevr-db
+      volumes:
+         - ./db_backup:/nexclipper
+      command:
+         - bash
+         - -c
+         - |
+            chmod +x /init-db.sh
+            /init-db.sh root root klevr-db 3306 klevr ./conf/klevr-manager-db.sql /nexclipper
+            chmod +x /wait-for-it.sh
+            /wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
+            /klevr-manager -c ./conf/klevr-manager-compose.yml -hook "http://nexclipper-server:8080/events/klevr"
+
+   nexclipper-server:
+      image: nexclipper/nexclipper-server:latest
+      ports:
+         - "8080:8080"
+      depends_on:
+         - klevr-db
+      links:
+         - klevr-db
+      volumes:
+         - ./db_backup:/nexclipper
+      environment:
+        NC_REMOTE_KLEVR_INNER-URL: "http://test.com:8090"
+        NC_REMOTE_KLEVR_OUTER-URL: "http://test.com:8090"
+        NC_KLEVR_COMMAND_AGENT-INSTALL: "curl -sL gg.gg/provbee | K3S_SET=N K_API_KEY=\"{API_KEY}\" K_PLATFORM=\"{PLATFORM}\" K_MANAGER_URL=\"{KLEVR_URL}\" K_ZONE_ID=\"{ZONE_ID}\" bash"
+        NC_USERS_LOGIN_HANDLER_REDIRECT-URL: "http://test.com:8080"
+        NC_SECURITY_REPRESENTATION-DOMAIN: test.com
+        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI: "http://test.com:8080/login/oauth2/code/{registrationId}"
+      command:
+         - bash
+         - -c
+         - |
+            chmod +x /app/wait-for-it.sh
+            /app/wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
+            chmod +x /app/init-db.sh
+            /app/init-db.sh root root klevr-db 3306 nexclipper /app/conf/init.sql /nexclipper
+            java -Dspring.profiles.active=compose -jar /app/*.jar

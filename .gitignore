@@ -1,5 +1,8 @@
 HELP.md
-target/
+target/classes
+target/generated*
+target/maven*
+target/test*
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -45,10 +48,10 @@ build/
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
 *.zip
 *.tar.gz
 *.rar
+/.DS_Store

@@ -1,0 +1,88 @@
+@charset "UTF-8";
+
+/* bootstrap focus outline reset */
+.form-control{border-radius:0;padding-top:9px}
+.form-control:focus {background-color:none;-webkit-box-shadow: none;outline:-webkit-focus-ring-color auto 0px;}
+textarea.form-control{min-height:150px;}
+input::placeholder {color:#777;font-style:italic}
+
+select.form-control,
+select.form-control:focus{border:0;outline:1px solid #ccc;outline-offset:-1px;}
+.form-control-lg{height:calc(2.875rem + 8px);font-size:1rem}
+
+/* input- checkbox와 radio 버튼  디자인 animation */
+.form-group,
+.form-control{font-size:14px}
+.form-group input[type="checkbox"],
+.form-group input[type="radio"]{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}
+
+.form-group input[type="checkbox"]:focus + span:before,
+.form-group input[type="radio"]:focus + span:before,
+.form-group input[type="checkbox"]:hover + span:before,
+.form-group input[type="radio"]:hover + span:before{border-color:#ccc}
+
+.form-group input[type="checkbox"]:active + span:before,
+.form-group input[type="radio"]:active + span:before{transition-duration:0s}
+
+.form-group input[type="checkbox"] + span,
+.form-group input[type="radio"] + span{position:relative;padding-left:22px;vertical-align:middle;user-select:none;cursor:pointer}
+
+.form-group input[type="checkbox"] + span:before,
+.form-group input[type="radio"] + span:before{box-sizing:content-box;content:'';color:#bdbdbd;position:absolute;top:50%;left:0;width:20px;height:20px;margin-top:-12px;border:1px solid #bdbdbd;text-align:center;transition:all 0.4s ease}
+
+.form-group input[type="checkbox"] + span:after,
+.form-group input[type="radio"] + span:after{box-sizing:content-box;content:'';background-color:#555;position:absolute;top:56%;left:8px;width:6px;height:6px;margin-top:-5px;transform:scale(0);transform-origin:50%;transition:transform 200ms ease-out}
+
+.form-group input[type="checkbox"]:disabled + span:before,
+.form-group input[type="radio"]:disabled + span:before{ border-color:#ccc}
+
+.form-group input[type="checkbox"]:disabled:focus + span:before,
+.form-group input[type="radio"]:disabled:focus + span:before,
+.form-group input[type="checkbox"]:disabled:hover + span:before,
+.form-group input[type="radio"]:disabled:hover + span:before{ background-color:inherit}
+
+.form-group input[type="checkbox"]:disabled:checked + span:before,
+.form-group input[type="radio"]:disabled:checked + span:before{ background-color:#ccc}
+
+.form-group input[type="checkbox"] + span:after{background-color:transparent;top:50%;left:6px;width:8px;height:3px;margin-top:-5px;border-style:solid;border-color:#555;border-width:0 0 3px 3px;border-image:none;transform:rotate(-45deg) scale(0)}
+.form-group input[type="checkbox"]:checked + span:after{content:'';transform:rotate(-45deg) scale(1);transition:transform 200ms ease-out}
+
+.form-group input[type="radio"]:checked + span:before{animation:borderscale 300ms ease-in;background-color:white}
+.form-group input[type="radio"]:checked + span:after{ transform:scale(1)}
+.form-group input[type="radio"] + span:before, .form-group input[type="radio"] + span:after{border-radius:50%}
+
+.form-group input[type="checkbox"]:checked + span:before{animation:borderscale 200ms ease-in;background:#fff}
+.form-group input[type="checkbox"]:checked + span:after{transform:rotate(-45deg) scale(1)}
+.form-group label{cursor:pointer;margin-bottom:5px;font-size:15px}
+.form-group label + label{margin-left:10px}
+
+.input-group .input-group-addon {border-color:#ededed} 
+.input-group .input-group-addon.bg-none{background:transparent;padding: 0 0 0 10px;border:0}
+.input-group .input-group-addon.bg-none .input-group .input-group-addon{border-color:transparent;padding:0 10px;background:transparent}
+.input-group .input-group-addon.bg-none .input-group .form-control {margin-left:3px}
+
+/* form validation */
+.vf-invalid,
+.error-list{color:#e62e2e;}
+.error-list{position:relative;margin-bottom:10px;color:#fff;background-color:#e62e2e;border:1px solid #e62e2e;border-radius:5px;padding:6px 10px 0;font-size:13px;}
+.error-list ul{min-height:38px;}
+.error-list:after{display:block;position:absolute;top:15px;left:10px;content:'x';font-size:12px;border:1px solid #fff;border-radius:10px;padding:0 6px;}
+.error-list li{padding-left:28px;margin-top:9px;}
+
+/* validation*/
+.has-danger .form-control-feedback,
+.form-control-feedback{color:#e64646;font-size:12px;/*padding:5px 0*/}
+.placeholder-message{color:#bbb;font-size:12px;margin-bottom:10px}
+.required-field{position:relative;display:inline-block;}
+.required-field::after {display:block;position:absolute;top:-11px;left:0;content: '*';color: red;margin-left:0px;}
+
+form > .form-group:last-child{margin-bottom:0}
+.form-group .d-inline-block {width:100%}
+.form-group .d-inline-block >label,
+.form-group .d-inline-block >div{float:left}
+
+@media (max-width:767px) {
+	textarea.form-control{min-height:125px;}
+}
+
+

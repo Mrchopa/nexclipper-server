@@ -2,35 +2,110 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="~{layout/basic_layout}">
 <head>
-<!-- [[ START ]] CSS import -->
-<th:block layout:replace="~{layout/common_fragments :: css-import}"></th:block>
-<!-- [[  END  ]] CSS import -->
 </head>
 <body>
 	<div layout:fragment="content" class="container-fluid">
-		<div layout:replace="~{layout/web_elements_common_fragments :: content-header('Forms')}"></div>
+		<div layout:replace="~{layout/common_fragments :: content-header('ZONE 생성 및 Agent 설치')}"></div>
 		<div class="row">
-			<form role="form" action="/view/zones" method="POST">
-				<div class="form-group">
-					현재 생성된 ZONE 목록 : 
-					<div data-th-each="zone : ${list}">
-						[[${zone.name}]]([[${zone.platform}]])
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+				<div class="card mb-3">
+					<div class="card-header">
+						<h3 class="card-title">새로운 ZONE 생성</h3>
+					</div>
+					<div class="card-body">
+					<form role="form" action="/view/zones" method="POST">
+						<div class="form-horizontal">
+							<label class="col-sm-3 control-label">Platform 선택</label>
+							<div class="col-sm-9">
+								<div class="form-group">
+									<label class="radio-inline"> <input type="radio" name="platform" id="optionsRadiosInline1"
+										value="baremetal" checked> <span></span> baremetal
+									</label> <label class="radio-inline"> <input type="radio" name="platform"
+										id="optionsRadiosInline2" value="kubernetes"> <span></span> K8s
+									</label> <label class="radio-inline"> <input type="radio" name="platform"
+										id="optionsRadiosInline3" value="AWS"> <span></span> AWS
+									</label>
+								</div>
+							</div>
+							<!--  /.col-sm-9 -->
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label col-lg-2">ZONE 이름</label>
+							<div class="col-lg-10">
+								<input type="text" class="form-control" name="name">
+							</div>
+						</div>
+						<div class="btn-area text-center">
+							<button type="submit" class="btn btn-success">Create</button>
+						</div>
+					</form>
 					</div>
 				</div>
-				<div class="form-group">
-					Platform 선택 : 
-					<input class="form-control" type="radio" name="platform" value="baremetal" />baremetal
-					<input class="form-control" type="radio" name="platform" value="K8S" />K8S
-					<input class="form-control" type="radio" name="platform" value="AWS" />AWS
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+				<div class="card mb-3">
+					<div class="card-header">
+						<h3 class="card-title">Agent 설치</h3>
+					</div>
+					<div class="card-body">
+						<div class="form-horizontal">
+							<div class="form-group ">
+								<div class="radio" data-th-each="zone : ${list}">
+									<label> <input type="radio" name="optionsRadios" id="optionsRadios1" th:value="${zone.id}" class="target-zone">
+										<span></span> [[${zone.name}]]([[${zone.platform}]])
+									</label>
+									<div>Initialized : [[${zone.init}]] [[${zone.dashboardUrl != null ? 'Dashboard : '+zone.dashboardUrl : ''}]]</div>
+									<div data-th-each="agent : ${agentMap.get(zone.id)}" style="padding-left:10px">
+										- [[${primaryMap.get(zone.id).agentKey == agent.agentKey ? '(Primary)' : ''}]][[|${agent.ip}:${agent.port}|]] (cpu:[[${agent.core}]] / mem:[[${agent.memory}]] / disk:[[${agent.disk}]])
+									</div>
+								</div>
+							</div>
+							<div id="commandBlock" class="form-group" style="display:none;">
+								<span id="command-label"></span>
+								<input type="text" id="command-copy" class="form-control">
+								<button type="button" id="command-copy-btn" class="btn btn-success">Copy to clipboard</button>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="form-group">
-					ZONE 이름 : <input class="form-control" type="text" name="name" />
-				</div>
-				<div class="form-group">
-					<input class="form-control" type="submit" value="ZONE 생성" />
-				</div>
-			</form>
+			</div>
 		</div>
 	</div>
 </body>
+<script layout:fragment="local-script">
+	const apiKey = "[[${myAccount.apiKey}]]";
+	const klevrUrl = "[[${klevrUrl}]]";
+	
+	const commandCopy = $("#command-copy");
+	
+	$.when($.ready).then(function() {
+		const block = $("#commandBlock");
+		
+		$(".target-zone").bind("click", function() {
+			block.css('display', 'none');
+			
+			$.ajax({
+				method: "GET",
+				url: "/zones/commands/agent-install",
+				data: {
+					zoneId: $(this).val()
+				}
+			}).done(function(data) {
+				/* $("#command-label").text(data); */
+				commandCopy.val(data);
+			});
+			
+			block.css('display', 'block');
+		});
+		
+		$("#command-copy-btn").bind("click", function() {
+			if(commandCopy.val() != "") {
+				var element = document.getElementById("command-copy");
+				element.select();
+				element.setSelectionRange(0, 9999);
+				document.execCommand("copy");
+			}
+		});
+	});
+</script>
 </html>

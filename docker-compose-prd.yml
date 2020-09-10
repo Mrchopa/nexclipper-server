@@ -1,0 +1,59 @@
+version: '3'
+services:
+   klevr-db:
+      image: mariadb:10.5.5
+      restart: always
+      volumes:
+         - ./nexc/data/mariadb:/var/lib/mysql
+      environment:
+         - MYSQL_ROOT_PASSWORD=${MYSQLPASSWD}
+      healthcheck:
+         test: "/usr/bin/mysql --user=root --password=${MYSQLPASSWD} --execute \"show databases;\""
+         interval: 3s
+         timeout: 1s
+         retries: 10
+      ports:
+         - "${MYSQLPORT}:3306"
+
+   klevr-manager:
+      image: klevry/klevr-manager:latest
+      ports:
+         - "8090:8090"
+      depends_on:
+         - klevr-db
+      links:
+         - klevr-db
+      volumes:
+         - ./db_backup:/nexclipper
+      command:
+         - bash
+         - -c
+         - |
+            /init-db.sh root ${MYSQLPASSWD} klevr-db 3306 klevr ./conf/klevr-manager-db.sql /nexclipper
+            /wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
+            /klevr-manager -c ./conf/klevr-manager-compose.yml -hook "http://nexclipper-server:8080/events/klevr"
+
+   nexclipper-server:
+      image: nexclipper/nexclipper-server:latest
+      ports:
+         - "80:8080"
+      depends_on:
+         - klevr-db
+      links:
+         - klevr-db
+      volumes:
+         - ./db_backup:/nexclipper
+      environment:
+        NC_REMOTE_KLEVR_INNER-URL: "http://klevr-manager:8090"
+        NC_REMOTE_KLEVR_OUTER-URL: "http://${CONSOLEURL}:8090"
+        NC_KLEVR_COMMAND_AGENT-INSTALL: "curl -sL gg.gg/provbee | K3S_SET=N K_API_KEY=\"{API_KEY}\" K_PLATFORM=\"{PLATFORM}\" K_MANAGER_URL=\"{KLEVR_URL}\" K_ZONE_ID=\"{ZONE_ID}\" bash"
+        NC_USERS_LOGIN_HANDLER_REDIRECT-URL: "http://console.nexclipper.io"
+        NC_SECURITY_REPRESENTATION-DOMAIN: nexclipper.io
+        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI: "http://${CONSOLEURL}/login/oauth2/code/{registrationId}"
+      command:
+         - bash
+         - -c
+         - |
+            /app/wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
+            /app/init-db.sh root ${MYSQLPASSWD} klevr-db 3306 nexclipper /app/conf/init.sql /nexclipper
+            java -Dspring.profiles.active=compose -jar /app/*.jar
