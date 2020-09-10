@@ -3,6 +3,7 @@ package co.kr.nexclipper.nexclipperserver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -20,8 +21,13 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import feign.FeignException;
+import feign.RequestInterceptor;
 import feign.Response;
+import feign.codec.DecodeException;
+import feign.codec.Decoder;
 import feign.codec.ErrorDecoder;
+import feign.gson.GsonDecoder;
 
 @Configuration
 public class FeignConfig implements Jackson2ObjectMapperBuilderCustomizer {
@@ -38,6 +44,11 @@ public class FeignConfig implements Jackson2ObjectMapperBuilderCustomizer {
 	}
 	
 	@Bean
+	public RequestInterceptor requestInterceptor() {
+		return requestTemplate -> requestTemplate.header("Content-Type", "application/json");
+	}
+	
+	@Bean
     public FeignFormatterRegistrar localDateFeignFormatterRegister() {
         return registry -> {
             DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
@@ -47,12 +58,25 @@ public class FeignConfig implements Jackson2ObjectMapperBuilderCustomizer {
     }
 	
 	@Bean
-    public FeignErrorDecode decoder() {
-        return new FeignErrorDecode();
+	public Decoder docoder() {
+		return new GsonDecoder();
+	}
+	
+	@Bean
+    public FeignErrorDecoder errorDecoder() {
+        return new FeignErrorDecoder();
     }
 	
-	static public class FeignErrorDecode implements ErrorDecoder {
-		private static final Logger LOG = LoggerFactory.getLogger(FeignErrorDecode.class);
+	static public class FeignDecoder implements Decoder {
+		@Override
+		public Object decode(Response response, Type type) throws IOException, DecodeException, FeignException {
+			return null;
+		}
+		
+	}
+	
+	static public class FeignErrorDecoder implements ErrorDecoder {
+		private static final Logger LOG = LoggerFactory.getLogger(FeignErrorDecoder.class);
 
 		@Override
 		public Exception decode(String methodKey, Response response) {
@@ -89,6 +113,5 @@ public class FeignConfig implements Jackson2ObjectMapperBuilderCustomizer {
 	            return "";
 	        }
 	    }
-		
 	}
 }
