@@ -1,0 +1,67 @@
+server:
+  port: 8080
+ 
+nc:
+  security:
+    jwt:
+      expiration: 3600
+      secret: "NeX(|0UdAQrD_Use&0n1y"
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 3000
+        readTimeout: 3000
+        loggerLevel: NONE
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread.timeoutInMilliseconds: 3000
+          strategy: SEMAPHORE
+          
+spring:
+  datasource:
+    url: "jdbc:mariadb://klevr-db:3306/nexclipper?useSSL=false&autoReconnect=true&characterEncoding=utf8"
+    username: nexclipper
+    password: nexclipper
+    hikari:
+      driver-class-name: org.mariadb.jdbc.Driver
+      maximum-pool-size: 3
+      minimum-idle: 1
+    
+## Security
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "721627330971-5pe82kv62vmfjvql882aq89le939628o.apps.googleusercontent.com"
+            client-secret: "K_QqpzpFZQUM3Bk3tCKKRVAu"
+            redirect-uri: "http://localhost:8080/login/oauth2/code/{registrationId}"
+          github:
+            client-id: "87b2b50ddae619b79cb7"
+            client-secret: "f18c5408455a037161f65bb1a8af328334d5f303"
+            redirect-uri: "/login/oauth2/code/{registrationId}"
+          naver:
+            client-id: "tPibCKEIzr3XcrEDkMSg"
+            client-secret: "O7gD9nJv_Q"
+            redirect-uri: "/login/oauth2/code/{registrationId}"
+            authorizationGrantType: authorization_code
+            scope:
+              - ""
+            clientName: Naver
+          kakao:
+            client-id: "ace782219285baeb0ae371dbc0034eb0"
+            client-secret: "yByD76DL7OxkJUBGGc6ZlhAmu4FaU0kb"
+            redirect-uri: "/login/oauth2/code/{registrationId}"
+            authorizationGrantType: "authorization_code"
+            client-authentication-method: post
+            scope:
+              - ""
+            clientName: Kakao

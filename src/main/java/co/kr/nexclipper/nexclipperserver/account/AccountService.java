@@ -54,7 +54,7 @@ public class AccountService {
 		LOG.debug("persist zone : [{}]", zone);
 		
 		AgentGroup group = new AgentGroup(zone);
-//		klevrService.createAgentGroup(group, apiKeyRepo.getOne(CommonPrincipal.getPrincipal().getId()).getApiKey());
+		klevrService.createAgentGroup(group, apiKeyRepo.getOne(CommonPrincipal.getPrincipal().getId()).getApiKey());
 		
 		return zone;
 	}
