@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,9 @@ public class AccountController {
 	@Autowired
 	private ApiKeysRepository apiKeyRepo;
 	
+	@Value("${nc.api.front-refresh-interval}")
+	private int refreshInterval;
+	
 	@GetMapping("/my")
 	@ApiOperation(value = "내 계정 정보를 반환한다.")
 	public AccountDto getMyAccount(
@@ -36,6 +40,7 @@ public class AccountController {
 		
 		BeanUtils.copyProperties(apiKey.getUser(), dto);
 		dto.setApiKey(apiKey.getApiKey());
+		dto.setRefreshInterval(refreshInterval);
 		
 		LOG.debug("dto : [{}]", dto.toString());
 		

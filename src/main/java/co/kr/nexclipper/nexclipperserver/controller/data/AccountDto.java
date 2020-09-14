@@ -41,6 +41,9 @@ public class AccountDto implements Serializable {
 	@ApiModelProperty("계정 API key")
 	private String apiKey;
 	
+	@ApiModelProperty("새로고침 간격(seconds)")
+	private int refreshInterval;
+	
 	@Override
 	public String toString() {
 		return ToStringUtils.toString(this);
@@ -124,5 +127,13 @@ public class AccountDto implements Serializable {
 
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
+	}
+
+	public int getRefreshInterval() {
+		return refreshInterval;
+	}
+
+	public void setRefreshInterval(int refreshInterval) {
+		this.refreshInterval = refreshInterval;
 	}
 }

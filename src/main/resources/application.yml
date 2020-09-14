@@ -30,6 +30,8 @@ nc:
     - "/css/**"
     - "/js/**"
     - "/events/**"
+  api:
+    front-refresh-interval: 3 #seconds
   users:
     join-filter-method: whitelist
     login:
