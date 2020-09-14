@@ -1,5 +1,7 @@
 package co.kr.nexclipper.nexclipperserver.account.entity;
 
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,7 +9,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import co.kr.nexclipper.nexclipperserver.account.Platform;
+import co.kr.nexcloud.framework.commons.util.ToStringUtils;
 import co.kr.nexcloud.framework.jpa.BaseModel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,8 +28,11 @@ import io.swagger.annotations.ApiModelProperty.AccessMode;
 @Entity
 @Table(name="ACCOUNTS_ZONE")
 @ApiModel(description = "계정별 ZONE 데이터")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class AccountsZone extends BaseModel<Long> {
 	private static final long serialVersionUID = -769609915721814401L;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(AccountsZone.class);
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +60,7 @@ public class AccountsZone extends BaseModel<Long> {
 	@ApiModelProperty(value = "클러스터 이름", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String clusterName;
 	
-	@ApiModelProperty(value = "Tag (','로 구분)", readOnly = true, accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "Tag (','로 구분)", readOnly = false, accessMode = AccessMode.READ_ONLY)
 	private String tags;
 	
 	@Transient
@@ -66,9 +80,13 @@ public class AccountsZone extends BaseModel<Long> {
 	private String account;
 	
 	@Transient
-	@ApiModelProperty(value = "클러스터 사이즈", readOnly = true, accessMode = AccessMode.READ_ONLY)
+	@ApiModelProperty(value = "클러스터 사이즈(에이전트 개수)", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private int size;
 	
+	@Transient
+	@ApiModelProperty(value = "그라파나 URL", readOnly = true, accessMode = AccessMode.READ_ONLY)
+	private String grafanaUrl;
+
 	@Transient
 	@ApiModelProperty(value = "프로메테우스 URL", readOnly = true, accessMode = AccessMode.READ_ONLY)
 	private String prometheusUrl;
@@ -239,5 +257,24 @@ public class AccountsZone extends BaseModel<Long> {
 
 	public void setPendingTaskCount(int pendingTaskCount) {
 		this.pendingTaskCount = pendingTaskCount;
+	}
+
+	public String getGrafanaUrl() {
+		if(!StringUtils.isEmpty(this.dashboardUrl)) {
+			try {
+				@SuppressWarnings("unchecked")
+				Map<String, String> map = new ObjectMapper().readValue(this.dashboardUrl, Map.class);
+				
+				grafanaUrl = map.get("grafana");
+			} catch (JsonProcessingException e) {
+				LOG.error("[{}] - {}", ToStringUtils.toString(this), e.getMessage(), e);
+			}
+		}
+		
+		return grafanaUrl;
+	}
+
+	public void setGrafanaUrl(String grafanaUrl) {
+		this.grafanaUrl = grafanaUrl;
 	}
 }

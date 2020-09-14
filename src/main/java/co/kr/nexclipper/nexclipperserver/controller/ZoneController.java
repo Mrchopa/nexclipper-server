@@ -48,6 +48,13 @@ public class ZoneController {
 		return zoneRepo.findAllByUserId(principal.getId());
 	}
 	
+	@GetMapping("/{zoneId}")
+	@ApiOperation(value="ZONE 세부 정보를 반환한다.")
+	public AccountsZone getZone(
+			@ApiParam(value="ZONE ID") @PathVariable Long zoneId) {
+		return zoneRepo.getOne(zoneId);
+	}
+	
 	@PostMapping
 	@ApiOperation(value="ZONE을 생성한다.")
 	public AccountsZone addZone(
