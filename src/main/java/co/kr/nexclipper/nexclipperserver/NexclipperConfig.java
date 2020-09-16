@@ -29,6 +29,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -70,6 +71,11 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		LOG.debug("init NexclipperConfig");
 		this.context = applicationContext;
+	}
+	
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**").allowedMethods("*");
 	}
 	
 	@Override
