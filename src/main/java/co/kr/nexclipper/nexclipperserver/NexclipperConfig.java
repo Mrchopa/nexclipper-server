@@ -3,7 +3,10 @@ package co.kr.nexclipper.nexclipperserver;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
 
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.slf4j.Logger;
@@ -27,6 +30,7 @@ import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -40,6 +44,7 @@ import co.kr.nexclipper.nexclipperserver.controller.data.KlevrEventType;
 import co.kr.nexclipper.nexclipperserver.klevr.KlevrProperties;
 import co.kr.nexclipper.nexclipperserver.remote.RemoteProperties;
 import co.kr.nexcloud.framework.commons.util.StackTraceUtils;
+import co.kr.nexcloud.framework.commons.util.ToStringUtils;
 import co.kr.nexcloud.framework.security.CommonPrincipal;
 import co.kr.nexcloud.framework.web.HttpRuntimeException;
 import co.kr.nexcloud.framework.web.RequestParameterLoggingInterceptor;
@@ -111,7 +116,9 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	}
 	
 	@Bean
-	public OAuthLoginPreHandler loginPreHandler(@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
+	public OAuthLoginPreHandler loginPreHandler(
+			EntityManager entityManager,
+			@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
 		return (request, response, authentication, exception) -> {
 			try {
 				if(exception != null) {
@@ -122,6 +129,19 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 					}
 					else {
 						response.sendRedirect(redirectUrl+"?loginSuccess=false&message="+URLEncoder.encode("OAuth authentication failed.", "UTF-8"));
+					}
+				}
+				else {
+					OAuth2User user = null;
+					
+					try {
+						user = (OAuth2User)authentication.getPrincipal();
+						entityManager.createNativeQuery("INSERT INTO ACCESS_LOGS (EMAIL) VALUES (?)").setParameter(1, (String)user.getAttribute("email")).executeUpdate();
+					} catch(Exception ex) {
+						if(user != null)
+							LOG.warn("access logging failed - [{}]", ToStringUtils.toString(user));
+						else 
+							LOG.warn("access logging failed - [null]");
 					}
 				}
 			} catch(Exception e) {
