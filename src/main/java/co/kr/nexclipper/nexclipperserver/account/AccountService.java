@@ -2,6 +2,9 @@ package co.kr.nexclipper.nexclipperserver.account;
 
 import java.util.UUID;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +42,9 @@ public class AccountService {
 	
 	@Autowired
 	private RemoteProperties remoteProp;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Transactional
 	public AccountsZone createAccountsZone(AccountsZone zone) {
@@ -83,5 +89,10 @@ public class AccountService {
 		LOG.debug("agent install command : [{}]", command);
 		
 		return command;
+	}
+	
+	@Transactional
+	public void addAccessLog(String email) {
+		entityManager.createNativeQuery("INSERT INTO ACCESS_LOGS (EMAIL) VALUES (?)").setParameter(1, email).executeUpdate();
 	}
 }
