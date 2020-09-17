@@ -3,10 +3,7 @@ package co.kr.nexclipper.nexclipperserver;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import javax.persistence.EntityManager;
 
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.slf4j.Logger;
@@ -117,7 +114,7 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 	
 	@Bean
 	public OAuthLoginPreHandler loginPreHandler(
-			EntityManager entityManager,
+			AccountService service,
 			@Value("${nc.users.login.handler.redirect-url}") String redirectUrl) {
 		return (request, response, authentication, exception) -> {
 			try {
@@ -136,12 +133,12 @@ public class NexclipperConfig implements ApplicationContextAware, WebMvcConfigur
 					
 					try {
 						user = (OAuth2User)authentication.getPrincipal();
-						entityManager.createNativeQuery("INSERT INTO ACCESS_LOGS (EMAIL) VALUES (?)").setParameter(1, (String)user.getAttribute("email")).executeUpdate();
+						service.addAccessLog((String)user.getAttribute("email"));
 					} catch(Exception ex) {
 						if(user != null)
-							LOG.warn("access logging failed - [{}]", ToStringUtils.toString(user));
+							LOG.warn("access logging failed - [{}]", ToStringUtils.toString(user), ex);
 						else 
-							LOG.warn("access logging failed - [null]");
+							LOG.warn("access logging failed - [null]", ex);
 					}
 				}
 			} catch(Exception e) {
