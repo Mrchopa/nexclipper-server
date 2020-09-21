@@ -1,63 +1,30 @@
 version: '3'
 services:
-   klevr-db:
-      image: mariadb
-      restart: always
-      volumes:
-         - ./data/mariadb:/var/lib/mysql
-      environment:
-         - MYSQL_ROOT_PASSWORD=root
-      healthcheck:
-         test: "/usr/bin/mysql --user=root --password=root --execute \"show databases;\""
-         interval: 3s
-         timeout: 1s
-         retries: 10
-      ports:
-         - "3306:3306"
-
-   klevr-manager:
-      image: klevry/klevr-manager:latest
-      ports:
-         - "8090:8090"
-      depends_on:
-         - klevr-db
-      links:
-         - klevr-db
-      volumes:
-         - ./db_backup:/nexclipper
-      command:
-         - bash
-         - -c
-         - |
-            chmod +x /init-db.sh
-            /init-db.sh root root klevr-db 3306 klevr ./conf/klevr-manager-db.sql /nexclipper
-            chmod +x /wait-for-it.sh
-            /wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
-            /klevr-manager -c ./conf/klevr-manager-compose.yml -hook "http://nexclipper-server:8080/events/klevr"
-
    nexclipper-server:
-      image: nexclipper/nexclipper-server:latest
+      image: ${MODULE_IMAGE}
+      container_name: dev_nexclipper-server
       ports:
          - "8080:8080"
-      depends_on:
-         - klevr-db
-      links:
-         - klevr-db
       volumes:
          - ./db_backup:/nexclipper
       environment:
-        NC_REMOTE_KLEVR_INNER-URL: "http://test.com:8090"
-        NC_REMOTE_KLEVR_OUTER-URL: "http://test.com:8090"
+        NC_REMOTE_KLEVR_INNER-URL: "${KLEVR_INNER_URL}"
+        NC_REMOTE_KLEVR_OUTER-URL: "${KLEVR_URL}"
         NC_KLEVR_COMMAND_AGENT-INSTALL: "curl -sL gg.gg/provbee | K3S_SET=N K_API_KEY=\"{API_KEY}\" K_PLATFORM=\"{PLATFORM}\" K_MANAGER_URL=\"{KLEVR_URL}\" K_ZONE_ID=\"{ZONE_ID}\" bash"
-        NC_USERS_LOGIN_HANDLER_REDIRECT-URL: "http://test.com:8080"
-        NC_SECURITY_REPRESENTATION-DOMAIN: test.com
-        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI: "http://test.com:8080/login/oauth2/code/{registrationId}"
+        NC_USERS_LOGIN_HANDLER_REDIRECT-URL: "${FRONT_URL}"
+        NC_USERS_JWT_EXPIRATION: 3600
+        NC_USERS_JWT_SECRET: "${JWT_SECRET}"
+        NC_SECURITY_REPRESENTATION-DOMAIN: nexclipper.io
+        NC_API_FRONT-REFRESH-INTERVAL: 5
+        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI: "${NEXCLIPPER_URL}/login/oauth2/code/{registrationId}"
+        SPRING_DATASOURCE_URL: "jdbc:mariadb://${NEXCLIPPER_DB_URL}:${NEXCLIPPER_DB_PORT}/nexclipper?useSSL=false&autoReconnect=true&characterEncoding=utf8"
+        SPRING_DATASOURCE_USERNAME: "${NEXCLIPPER_DB_USER}"
+        SPRING_DATASOURCE_PASSWORD: "${NEXCLIPPER_DB_PASSWD}"
+        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT-ID: ${OAUTH_CLIENT_ID}
+        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT-SECRET: ${OAUTH_CLIENT_SECRET}
       command:
          - bash
          - -c
          - |
-            chmod +x /app/wait-for-it.sh
-            /app/wait-for-it.sh klevr-db:3306 -t 10 -s -- echo "mariadb is up"
-            chmod +x /app/init-db.sh
-            /app/init-db.sh root root klevr-db 3306 nexclipper /app/conf/init.sql /nexclipper
-            java -Dspring.profiles.active=compose -jar /app/*.jar
+            /app/init-db.sh ${NEXCLIPPER_DB_USER} ${NEXCLIPPER_DB_PASSWD} ${NEXCLIPPER_DB_URL} ${NEXCLIPPER_DB_PORT} nexclipper /app/conf/init.sql /nexclipper
+            java -Dspring.profiles.active=mvp1 -Dlogging.path=/nexclipper/log -jar /app/*.jar
